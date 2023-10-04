@@ -19,6 +19,12 @@
   overflow: auto;
 }
 
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
+
 @layer components {
   .selected-page {
     @apply bg-zinc-200 dark:bg-zinc-700 text-black inline-flex items-center rounded-md w-full mb-2 px-3 py-2 text-sm font-semibold hover:text-white dark:text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600;
@@ -39,7 +45,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   input[type='range'] {
     overflow: hidden;
-    width: 120px;
+    width: 100px;
     border-radius: 5px;
     -webkit-appearance: none;
     background-color: rgb(63 63 70 / var(--tw-bg-opacity));

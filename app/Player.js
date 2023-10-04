@@ -6,7 +6,7 @@ import store from './store';
 export default function Player(props) {
     const track = useSelector(state => state.player.value);
     const [percentage, setPercentage] = useState(0);
-    const [volume, setVolume] = useState(0);
+    const [volume, setVolume] = useState(0.5);
     const [playing, setPlaying] = useState(false);
     const [duration, setDuration] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
@@ -31,11 +31,18 @@ export default function Player(props) {
         playing ? audioRef.current.pause() : audioRef.current.play();
     }
 
-    store.subscribe(() => {
+    store.subscribe(async () => {
+        let streamKey = await fetch(`https://api-music.inspare.cc/request_streamkey/`)
+        streamKey = await streamKey.text()
+        console.log(streamKey)
+        if (!streamKey == 'OK') return;
+        
         let t = store.getState().player.value;
-        audioRef.current.src = t.preview;
+        console.log(t.id)
+        audioRef.current.src = `https://api-music.inspare.cc/lossless/${t.id}.mp3`;
         audioRef.current.load();
         audioRef.current.play();
+        audioRef.current.volume = volume;
     });
 
     useEffect(() => {
@@ -46,18 +53,16 @@ export default function Player(props) {
         audio.addEventListener("play", handlePlay);
         audio.addEventListener("pause", handlePause);
         audio.addEventListener("loadedmetadata", handleLoadedMetadata);
-        return () => {
-            audio.removeEventListener("play", handlePlay);
-            audio.removeEventListener("pause", handlePause);
-        };
-    }, []);
-
-    useEffect(() => {
         audioRef.current.addEventListener('timeupdate', () => {
             let current = audioRef.current.currentTime;
             setCurrentTime(current);
             setPercentage((current / audioRef.current.duration) * 100);
         });
+        return () => {
+            audio.removeEventListener("play", handlePlay);
+            audio.removeEventListener("pause", handlePause);
+            audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+        };
     }, []);
 
     return (
