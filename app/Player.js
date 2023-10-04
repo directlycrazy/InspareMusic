@@ -1,17 +1,31 @@
-import { BackwardIcon, PlayIcon, ForwardIcon } from "@heroicons/react/24/solid"
+import { BackwardIcon, PlayIcon, ForwardIcon, SpeakerWaveIcon } from "@heroicons/react/24/solid"
 import { useEffect, useState, useRef, createContext } from "react"
 import { useDispatch, useSelector } from "react-redux";
 import store from './store';
 
 export default function Player(props) {
     const track = useSelector(state => state.player.value)
+    const [percentage, setPercentage] = useState(0);
+    const [volume, setVolume] = useState(0);
+    const progress = useRef(null);
     const audioRef = useRef(null);
 
+    function volumeChange(e) {
+        setVolume(e.target.value);
+        audioRef.current.volume = volume;
+    }
+
     store.subscribe(() => {
-        console.log('function', track)
-        audioRef.current.src = track.preview;
+        let t = store.getState().player.value;
+        audioRef.current.src = t.preview;
         audioRef.current.load();
         audioRef.current.play();
+    })
+
+    useEffect(() => {
+        audioRef.current.addEventListener('timeupdate', () => {
+            setPercentage((audioRef.current.currentTime / audioRef.current.duration) * 100);
+        })
     })
 
     return (
@@ -23,7 +37,7 @@ export default function Player(props) {
                     id="player_progress"
                     style={{ height: 5, marginBottom: 66 }}
                 >
-                    <div className="absolute h-full bg-indigo-600" id="player_progress_bar" />
+                    <div className="absolute h-full bg-indigo-600" ref={progress} id="player_progress_bar" style={{width: `${percentage}%`}} />
                 </div>
             </div>
             <div
@@ -58,19 +72,21 @@ export default function Player(props) {
                         {/* <Icon src={Microphone} theme='solid' class="h-6 w-6" aria-hidden="true" /> */}
                     </button>
                     <button>
+                        <SpeakerWaveIcon className="h-6 w-6"></SpeakerWaveIcon>
                         {/* <Icon src={SpeakerWave} theme='solid' class="h-6 w-6" aria-hidden="true" /> */}
                     </button>
                     <input
                         type="range"
                         min={0}
                         max={1}
-                        step="0.1"
+                        onChange={volumeChange}
+                        step="0.01"
                         className="slider-input w-24 bg-zinc-700"
                     />
                     <span className="text-sm">0:00</span>
                 </div>
             </div>
-            <audio ref={audioRef}></audio>
+            <audio volume={volume} autoPlay ref={audioRef}></audio>
         </>
     )
 }
