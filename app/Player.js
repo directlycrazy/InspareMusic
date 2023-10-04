@@ -1,18 +1,34 @@
-import { BackwardIcon, PlayIcon, ForwardIcon, SpeakerWaveIcon } from "@heroicons/react/24/solid"
-import { useEffect, useState, useRef, createContext } from "react"
+import { BackwardIcon, PlayIcon, ForwardIcon, SpeakerWaveIcon, PauseIcon } from "@heroicons/react/24/solid";
+import { useEffect, useState, useRef, createContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import store from './store';
 
 export default function Player(props) {
-    const track = useSelector(state => state.player.value)
+    const track = useSelector(state => state.player.value);
     const [percentage, setPercentage] = useState(0);
     const [volume, setVolume] = useState(0);
+    const [playing, setPlaying] = useState(false);
+    const [duration, setDuration] = useState(0);
+    const [currentTime, setCurrentTime] = useState(0);
     const progress = useRef(null);
     const audioRef = useRef(null);
+
+    const pad = (num) => num.toString().padStart(2, "0");
+
+    function formatTime(time) {
+        const minutes = Math.floor(time / 60);
+        const seconds = Math.floor(time % 60);
+        return `${pad(minutes)}:${pad(seconds)}`;
+    }
 
     function volumeChange(e) {
         setVolume(e.target.value);
         audioRef.current.volume = volume;
+    }
+
+    function togglePlay() {
+        setPlaying(!playing);
+        playing ? audioRef.current.pause() : audioRef.current.play();
     }
 
     store.subscribe(() => {
@@ -20,13 +36,29 @@ export default function Player(props) {
         audioRef.current.src = t.preview;
         audioRef.current.load();
         audioRef.current.play();
-    })
+    });
+
+    useEffect(() => {
+        const audio = audioRef.current;
+        const handlePlay = () => setPlaying(true);
+        const handlePause = () => setPlaying(false);
+        const handleLoadedMetadata = () => setDuration(audio.duration);
+        audio.addEventListener("play", handlePlay);
+        audio.addEventListener("pause", handlePause);
+        audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+        return () => {
+            audio.removeEventListener("play", handlePlay);
+            audio.removeEventListener("pause", handlePause);
+        };
+    }, []);
 
     useEffect(() => {
         audioRef.current.addEventListener('timeupdate', () => {
-            setPercentage((audioRef.current.currentTime / audioRef.current.duration) * 100);
-        })
-    })
+            let current = audioRef.current.currentTime;
+            setCurrentTime(current);
+            setPercentage((current / audioRef.current.duration) * 100);
+        });
+    }, []);
 
     return (
         <>
@@ -37,7 +69,7 @@ export default function Player(props) {
                     id="player_progress"
                     style={{ height: 5, marginBottom: 66 }}
                 >
-                    <div className="absolute h-full bg-indigo-600" ref={progress} id="player_progress_bar" style={{width: `${percentage}%`}} />
+                    <div className="absolute h-full bg-indigo-600" ref={progress} id="player_progress_bar" style={{ width: `${percentage}%` }} />
                 </div>
             </div>
             <div
@@ -58,8 +90,8 @@ export default function Player(props) {
                     <button className="invisible fixed sm:visible sm:static">
                         <BackwardIcon theme='solid' className="h-9 w-9" aria-hidden="true"></BackwardIcon>
                     </button>
-                    <button>
-                        <PlayIcon theme='solid' className="h-9 w-9" aria-hidden="true"></PlayIcon>
+                    <button onClick={togglePlay}>
+                        {playing ? <PauseIcon className="h-9 w-9" aria-hidden="true"></PauseIcon> : <PlayIcon theme='solid' className="h-9 w-9" aria-hidden="true"></PlayIcon>}
                         {/* <Icon src={paused ? Play : Pause} theme='solid' class="h-9 w-9" aria-hidden="true" /> */}
                     </button>
                     <button>
@@ -83,10 +115,10 @@ export default function Player(props) {
                         step="0.01"
                         className="slider-input w-24 bg-zinc-700"
                     />
-                    <span className="text-sm">0:00</span>
+                    <span className="text-sm font-bold">{formatTime(currentTime)} / {formatTime(duration)}</span>
                 </div>
             </div>
             <audio volume={volume} autoPlay ref={audioRef}></audio>
         </>
-    )
+    );
 }
