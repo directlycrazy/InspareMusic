@@ -1,7 +1,6 @@
 import { BackwardIcon, PlayIcon, ForwardIcon, SpeakerWaveIcon, PauseIcon } from "@heroicons/react/24/solid";
-import { useEffect, useState, useRef, createContext } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import store from './store';
 
 export default function Player(props) {
     const track = useSelector(state => state.player.value);
@@ -31,20 +30,6 @@ export default function Player(props) {
         playing ? audioRef.current.pause() : audioRef.current.play();
     }
 
-    store.subscribe(async () => {
-        let streamKey = await fetch(`https://api-music.inspare.cc/request_streamkey/`)
-        streamKey = await streamKey.text()
-        console.log(streamKey)
-        if (!streamKey == 'OK') return;
-        
-        let t = store.getState().player.value;
-        console.log(t.id)
-        audioRef.current.src = `https://api-music.inspare.cc/lossless/${t.id}.mp3`;
-        audioRef.current.load();
-        audioRef.current.play();
-        audioRef.current.volume = volume;
-    });
-
     useEffect(() => {
         const audio = audioRef.current;
         const handlePlay = () => setPlaying(true);
@@ -58,12 +43,22 @@ export default function Player(props) {
             setCurrentTime(current);
             setPercentage((current / audioRef.current.duration) * 100);
         });
+        
         return () => {
             audio.removeEventListener("play", handlePlay);
             audio.removeEventListener("pause", handlePause);
             audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
         };
     }, []);
+
+    useEffect(() => {
+        if (track?.preview) {
+            audioRef.current.src = track.preview
+            audioRef.current.load();
+            audioRef.current.play();
+            audioRef.current.volume = volume;
+        }
+    }, [track])
 
     return (
         <>

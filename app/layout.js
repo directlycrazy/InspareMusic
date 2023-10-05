@@ -4,7 +4,7 @@ import './globals.css';
 import { Inter } from 'next/font/google';
 import Link from 'next/link';
 import { HomeIcon, MagnifyingGlassIcon, RocketLaunchIcon, Squares2X2Icon, CogIcon, UserIcon, PlayIcon, Bars3Icon } from '@heroicons/react/24/outline';
-import Player from './Player';
+import Player from './(components)/Player';
 import store from './store';
 import { Provider } from 'react-redux';
 

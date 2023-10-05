@@ -1,7 +1,7 @@
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import { Menu, Transition } from '@headlessui/react';
-import { Fragment, useContext } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { Fragment } from "react";
+import { useDispatch } from "react-redux";
 import {set} from '../(stores)/playerSlice';
 
 export default function Grid(props) {
@@ -23,7 +23,7 @@ export default function Grid(props) {
 						className="flex justify-between gap-x-6 py-3 hover:bg-gray-50 dark:hover:bg-zinc-800 cursor-pointer hover:shadow-inner p-2"
 					>
 						<div className="flex min-w-0 gap-x-4 w-full">
-							<img className="h-12 w-12 flex-none rounded-md bg-gray-50" src={track?.album?.cover_small} alt="" />
+							<img loading="lazy" className="h-12 w-12 flex-none rounded-md bg-gray-50" src={track?.album?.cover_small} alt="" />
 							<div className="min-w-0 flex-auto">
 								<p className="text-md font-bold leading-6 text-gray-900 dark:text-gray-200">
 									{track?.title}

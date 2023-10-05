@@ -5,7 +5,6 @@ import Grid from "../(components)/Grid";
 
 export default function Discover() {
 	const [results, setResults] = useState({});
-	let timeout;
 
 	useEffect(() => {
 		async function load() {
@@ -15,8 +14,7 @@ export default function Discover() {
 			setResults(res.tracks.data);
 		}
 		load();
-	}, [])	
-}
+	}, [])
 
 	return (
 		<>
