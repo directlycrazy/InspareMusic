@@ -10,7 +10,6 @@ export default function Discover() {
 		async function load() {
 			let res = await fetch(`https://api-music.inspare.cc/playlist/3155776842`);
 			res = await res.json();
-			console.log(res.tracks.data)
 			setResults(res.tracks.data);
 		}
 		load();
@@ -18,7 +17,7 @@ export default function Discover() {
 
 	return (
 		<>
-			<Grid results={results}></Grid>
+			<Grid tracks={results}></Grid>
 		</>
 	);
 }

@@ -23,7 +23,7 @@ export default function Search() {
 	return (
 		<>
 			<input onChange={type} type="text" placeholder="Find a song..." className="w-full p-4 rounded-md text-black dark:text-white bg-white border dark:border-zinc-600 dark:bg-zinc-700"></input>
-			<Grid results={results}></Grid>
+			<Grid tracks={results}></Grid>
 		</>
 	);
 }

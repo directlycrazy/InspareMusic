@@ -6,13 +6,10 @@ import {set} from '../(stores)/playerSlice';
 
 export default function Grid(props) {
 	const dispatch = useDispatch();
-	// const player = useContext(PlayerContext)
 	function play(track, index) {
 		dispatch(set(track));
 	}
-	// console.log(player)
-	let tracks = props.results;
-	console.log(tracks);
+	let tracks = props.tracks;
 	return (
 		<ul role="list" className="divide-y divide-gray-100 dark:divide-zinc-800 mt-5">
 			{tracks && tracks.length && tracks.map((track, index) => {
