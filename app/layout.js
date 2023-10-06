@@ -3,14 +3,50 @@
 import './globals.css';
 import { Inter } from 'next/font/google';
 import Link from 'next/link';
-import { HomeIcon, MagnifyingGlassIcon, RocketLaunchIcon, Squares2X2Icon, CogIcon, UserIcon, PlayIcon, Bars3Icon } from '@heroicons/react/24/outline';
+import { HomeIcon, MagnifyingGlassIcon, RocketLaunchIcon, Squares2X2Icon, CogIcon, UserIcon, PlayIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import Player from './(components)/Player';
 import store from './store';
 import { Provider } from 'react-redux';
+import { initializeApp } from 'firebase/app';
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from 'firebase/auth';
+import { useEffect, useState } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export default function RootLayout({ children }) {
+	const [username, setUsername] = useState('Log In');
+	const [menuOpen, setMenuOpen] = useState(false);
+
+	const firebaseConfig = {
+		apiKey: "AIzaSyAx6Kva6PUFY4_R222kWofzmui76HhC_OE",
+		authDomain: "inspare-music.firebaseapp.com",
+		databaseURL: "https://inspare-music-default-rtdb.firebaseio.com",
+		projectId: "inspare-music",
+		storageBucket: "inspare-music.appspot.com",
+		messagingSenderId: "1006979096581",
+		appId: "1:1006979096581:web:88feb2de3b23b75d5e7c6c"
+	};
+	const app = initializeApp(firebaseConfig);
+	const auth = getAuth();
+	const auth_provider = new GoogleAuthProvider();
+
+	function login() {
+		signInWithPopup(auth, auth_provider).then(result => {
+			localStorage.setItem('account_key', result.user.uid);
+			const user = result.user;
+			console.log(user);
+			setUsername(user.displayName);
+		});
+	}
+
+	useEffect(() => {
+		onAuthStateChanged(auth, (user) => {
+			if (user) {
+				setUsername(user.displayName);
+			}
+		});
+	}, []);
+
 	const links = [
 		['Home', '/', <HomeIcon className="-ml-0.5 mr-1.5 h-5 w-5"></HomeIcon>],
 		['Search', '/search', <MagnifyingGlassIcon className="-ml-0.5 mr-1.5 h-5 w-5"></MagnifyingGlassIcon>],
@@ -36,7 +72,7 @@ export default function RootLayout({ children }) {
 									<button
 										type="button"
 										className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700 dark:text-gray-300"
-
+										onClick={() => { setMenuOpen(true); }}
 									>
 										<span className="sr-only">Open main menu</span>
 										<Bars3Icon className="h-6 w-6" aria-hidden="true"></Bars3Icon>
@@ -48,50 +84,52 @@ export default function RootLayout({ children }) {
 									</a>
 								</div>
 							</nav>
-							{/* {#if mobileMenuOpen}
-				<div class="lg:hidden" on:close={setMobileMenuOpen}>
-					<div class="fixed inset-0 z-10" />
-					<div class="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white dark:bg-zinc-800 px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-						<div class="flex items-center justify-between">
-							<a href="#" class="-m-1.5 p-1.5">
-								<Icon src={Play} class='h-8 w-auto text-black dark:text-white'></Icon>
-							</a>
-							<button
-								type="button"
-								class="-m-2.5 rounded-md p-2.5 text-gray-700 dark:text-white"
-								on:click={() => setMobileMenuOpen()}
-							>
-								<span class="sr-only">Close menu</span>
-								<Icon src={XMark} class="h-6 w-6" aria-hidden="true" />
-							</button>
-						</div>
-						<div class="mt-6 flow-root">
-							<div class="-my-6 divide-y divide-gray-500/10">
-								<div class="space-y-2 py-6">
-									{#each links as link, index}
-									<a
-										on:click={() => setMobileMenuOpen()}
-										href={link[1]}
-										class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-zinc-700"
-									>
-										{link[0]}
-									</a>
-									{/each}
+							{menuOpen && <>
+								<div className="lg:hidden">
+									<div className="fixed inset-0 z-10">
+										<div className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white dark:bg-zinc-800 px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+											<div className="flex items-center justify-between">
+												<a href="#" className="-m-1.5 p-1.5">
+													<icon
+														src="{Play}"
+														className="h-8 w-auto text-black dark:text-white"
+													/>
+												</a>
+												<button
+													type="button"
+													className="-m-2.5 rounded-md p-2.5 text-gray-700 dark:text-white"
+													onClick={() => { setMenuOpen(false); }}
+												>
+													<span className="sr-only">Close menu</span>
+													<XMarkIcon className="h-6 w-6"></XMarkIcon>
+												</button>
+											</div>
+											<div className="mt-6 flow-root">
+												<div className="-my-6 divide-y divide-gray-500/10">
+													<div className="space-y-2 py-6">
+														{links.map((link, index) => {
+															return (
+																<Link key={index} onClick={() => { setMenuOpen(false); }} type='button' href={link[1]} className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-zinc-700">
+																	{link[0]}
+																</Link>
+															);
+														})}
+													</div>
+													<div className="py-6">
+														<a
+															href="#"
+															className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-zinc-700"
+															onClick={login}
+														>
+															{username}
+														</a>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
-								<div class="py-6">
-									<a
-										href="#"
-										on:click={login}
-										class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-zinc-700"
-									>
-										{username}
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			{/if} */}
+							</>}
 						</header>
 						<div className="flex flex-row h-full">
 							<aside
@@ -115,26 +153,16 @@ export default function RootLayout({ children }) {
 												</Link>
 											);
 										})}
-										{/* {#each links as link, index}
-						<a
-							type="button"
-							href={link[1]}
-							class={$page.url.pathname === link[1] ? 'selected-page' : 'sidebar-btn'}
-						>
-							<Icon src={link[2]} aria-hidden="true" />
-							{link[0]}
-						</a>
-						{/each} */}
 									</div>
 									<div className="absolute bottom-0 left-0 ml-5 mb-20">
 										<button
 											type="button"
 											className="inline-flex items-center rounded-md w-full bg-transparent mb-2 px-3 py-2 text-sm font-semibold text-black dark:text-white shadow-sm"
-
+											onClick={login}
 										>
 											<UserIcon className="-ml-0.5 mr-1.5 h-5 w-5"></UserIcon>
 											&nbsp;
-											Username
+											{username}
 										</button>
 									</div>
 								</div>

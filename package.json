@@ -12,6 +12,7 @@
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "@reduxjs/toolkit": "^1.9.6",
+    "firebase": "^10.4.0",
     "merge-images": "^2.0.0",
     "next": "13.5.4",
     "react": "^18",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10",
+    "encoding": "^0.1.13",
     "postcss": "^8",
     "tailwindcss": "^3"
   }
