@@ -2,7 +2,7 @@ import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from "react";
 import { useDispatch } from "react-redux";
-import {set} from '../(stores)/playerSlice';
+import { set } from '../(stores)/playerSlice';
 
 export default function Grid(props) {
 	const dispatch = useDispatch();
@@ -12,11 +12,11 @@ export default function Grid(props) {
 	let tracks = props.tracks;
 	return (
 		<ul role="list" className="divide-y divide-gray-100 dark:divide-zinc-800 mt-5">
-			{tracks && tracks.length && tracks.map((track, index) => {
+			{tracks && (tracks?.length > 0) && tracks.map((track, index) => {
 				return (
 					<li
 						key={index}
-						onClick={() => {play(track, index)}}
+						onClick={() => { play(track, index); }}
 						className="flex justify-between gap-x-6 py-3 hover:bg-gray-50 dark:hover:bg-zinc-800 cursor-pointer hover:shadow-inner p-2"
 					>
 						<div className="flex min-w-0 gap-x-4 w-full">

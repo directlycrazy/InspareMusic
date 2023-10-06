@@ -1,5 +1,6 @@
 import { BackwardIcon, PlayIcon, ForwardIcon, SpeakerWaveIcon, PauseIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState, useRef } from "react";
+import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function Player(props) {
@@ -43,7 +44,7 @@ export default function Player(props) {
             setCurrentTime(current);
             setPercentage((current / audioRef.current.duration) * 100);
         });
-        
+
         return () => {
             audio.removeEventListener("play", handlePlay);
             audio.removeEventListener("pause", handlePause);
@@ -51,14 +52,27 @@ export default function Player(props) {
         };
     }, []);
 
-    useEffect(() => {
-        if (track?.preview) {
-            audioRef.current.src = track.preview
+    async function play() {
+        if (localStorage.account_key) {
+            let a = await fetch(`https://api-music.inspare.cc/request_streamkey/${localStorage.account_key}`);
+            audioRef.current.src = `https://api-music.inspare.cc/lossless/${localStorage.account_key}/${track.id}.mp3`;
             audioRef.current.load();
             audioRef.current.play();
             audioRef.current.volume = volume;
+        } else {
+            if (track?.preview) {
+                audioRef.current.src = track.preview;
+                audioRef.current.load();
+                audioRef.current.play();
+                audioRef.current.volume = volume;
+            }
         }
-    }, [track])
+    }
+
+    useEffect(() => {
+        if (!track?.id) return;
+        play();
+    }, [track]);
 
     return (
         <>
@@ -79,7 +93,11 @@ export default function Player(props) {
                 <div className="flex absolute items-center justify-start space-x-4 left-0 ml-3 pb-5 md:pb-0">
                     {track?.album?.cover_small ? <img src={track?.album?.cover_small} alt="Album Cover" className="w-12 h-12 rounded-md"></img> : null}
                     <div>
-                        <h3 className="text-lg font-bold cursor-pointer">{track?.title}</h3>
+                        <h3 className="text-lg font-bold cursor-pointer">
+                            <Link href={`/album/${track?.album?.id}`}>
+                                {track?.title}
+                            </Link>
+                        </h3>
                         <p className="text-sm cursor-pointer">
                             {track?.artist?.name}
                         </p>
