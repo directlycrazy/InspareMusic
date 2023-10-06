@@ -36,27 +36,6 @@ export default function Player(props) {
         playing ? audioRef.current.pause() : audioRef.current.play();
     }
 
-    useEffect(() => {
-        const audio = audioRef.current;
-        const handlePlay = () => setPlaying(true);
-        const handlePause = () => setPlaying(false);
-        const handleLoadedMetadata = () => setDuration(audio.duration);
-        audio.addEventListener("play", handlePlay);
-        audio.addEventListener("pause", handlePause);
-        audio.addEventListener("loadedmetadata", handleLoadedMetadata);
-        audioRef.current.addEventListener('timeupdate', () => {
-            let current = audioRef.current.currentTime;
-            setCurrentTime(current);
-            setPercentage((current / audioRef.current.duration) * 100);
-        });
-
-        return () => {
-            audio.removeEventListener("play", handlePlay);
-            audio.removeEventListener("pause", handlePause);
-            audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
-        };
-    }, []);
-
     async function play() {
         if (localStorage.account_key) {
             let a = await fetch(`https://api-music.inspare.cc/request_streamkey/${localStorage.account_key}`);
@@ -79,8 +58,8 @@ export default function Player(props) {
         dispatch(set_queue({
             queue_pos: queue_pos + 1,
             tracks: queue
-        }))
-        dispatch(set(queue[queue_pos + 1]))
+        }));
+        dispatch(set(queue[queue_pos + 1]));
     }
 
     function back() {
@@ -88,9 +67,30 @@ export default function Player(props) {
         dispatch(set_queue({
             queue_pos: queue_pos - 1,
             tracks: queue
-        }))
-        dispatch(set(queue[queue_pos - 1]))
+        }));
+        dispatch(set(queue[queue_pos - 1]));
     }
+
+    useEffect(() => {
+        const audio = audioRef.current;
+        const handlePlay = () => setPlaying(true);
+        const handlePause = () => setPlaying(false);
+        const handleLoadedMetadata = () => setDuration(audio.duration);
+        audio.addEventListener("play", handlePlay);
+        audio.addEventListener("pause", handlePause);
+        audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+        audioRef.current.addEventListener('timeupdate', () => {
+            let current = audioRef.current.currentTime;
+            setCurrentTime(current);
+            setPercentage((current / audioRef.current.duration) * 100);
+        });
+
+        return () => {
+            audio.removeEventListener("play", handlePlay);
+            audio.removeEventListener("pause", handlePause);
+            audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+        };
+    }, []);
 
     useEffect(() => {
         if (!track?.id) return;
@@ -122,7 +122,9 @@ export default function Player(props) {
                             </Link>
                         </h3>
                         <p className="text-sm cursor-pointer">
-                            {track?.artist?.name}
+                            <Link href={`/artist/${track?.artist?.id}`}>
+                                {track?.artist?.name}
+                            </Link>
                         </p>
                     </div>
                 </div>
@@ -159,7 +161,7 @@ export default function Player(props) {
                     <span className="text-sm font-bold">{formatTime(currentTime)} / {formatTime(duration)}</span>
                 </div>
             </div>
-            <audio volume={volume} autoPlay ref={audioRef}></audio>
+            <audio volume={volume} onEnded={skip} autoPlay ref={audioRef}></audio>
         </>
     );
 }

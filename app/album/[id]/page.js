@@ -26,7 +26,7 @@ export default function album({ params }) {
 
 	return (
 		<>
-			<Header {...data}></Header>
+			<Header {...data} tracks={tracks}></Header>
 			<Grid tracks={tracks}></Grid>
 		</>
 	);

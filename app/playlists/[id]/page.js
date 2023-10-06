@@ -35,7 +35,7 @@ export default function album({ params }) {
 
 	return (
 		<>
-			<Header {...data} img={tracks?.[0]?.album?.cover_medium} subtitle={`${tracks?.length} songs`}></Header>
+			<Header {...data} img={tracks?.[0]?.album?.cover_medium} subtitle={`${tracks?.length} songs`} tracks={tracks}></Header>
 			<Grid tracks={tracks}></Grid>
 		</>
 	);
