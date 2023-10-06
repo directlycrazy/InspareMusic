@@ -2,14 +2,18 @@ import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from "react";
 import { useDispatch } from "react-redux";
-import { set } from '../(stores)/playerSlice';
+import { set, set_queue } from '../(stores)/playerSlice';
 
 export default function Grid(props) {
+	let tracks = props.tracks;
 	const dispatch = useDispatch();
 	function play(track, index) {
 		dispatch(set(track));
+		dispatch(set_queue({
+			queue_pos: index,
+			tracks: tracks
+		}))
 	}
-	let tracks = props.tracks;
 	return (
 		<ul role="list" className="divide-y divide-gray-100 dark:divide-zinc-800 mt-5">
 			{tracks && (tracks?.length > 0) && tracks.map((track, index) => {

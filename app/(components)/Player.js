@@ -2,9 +2,12 @@ import { BackwardIcon, PlayIcon, ForwardIcon, SpeakerWaveIcon, PauseIcon } from 
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
+import { set, set_queue } from "../(stores)/playerSlice";
 
 export default function Player(props) {
     const track = useSelector(state => state.player.value);
+    const queue = useSelector(state => state.player.queue);
+    const queue_pos = useSelector(state => state.player.queue_pos);
     const [percentage, setPercentage] = useState(0);
     const [volume, setVolume] = useState(0.5);
     const [playing, setPlaying] = useState(false);
@@ -12,6 +15,8 @@ export default function Player(props) {
     const [currentTime, setCurrentTime] = useState(0);
     const progress = useRef(null);
     const audioRef = useRef(null);
+
+    const dispatch = useDispatch();
 
     const pad = (num) => num.toString().padStart(2, "0");
 
@@ -69,6 +74,24 @@ export default function Player(props) {
         }
     }
 
+    function skip() {
+        if (queue_pos >= queue.length - 1) return;
+        dispatch(set_queue({
+            queue_pos: queue_pos + 1,
+            tracks: queue
+        }))
+        dispatch(set(queue[queue_pos + 1]))
+    }
+
+    function back() {
+        if (queue_pos <= 0) return;
+        dispatch(set_queue({
+            queue_pos: queue_pos - 1,
+            tracks: queue
+        }))
+        dispatch(set(queue[queue_pos - 1]))
+    }
+
     useEffect(() => {
         if (!track?.id) return;
         play();
@@ -105,14 +128,14 @@ export default function Player(props) {
                 </div>
                 <div className="md:absolute flex items-right md:items-center justify-end md:justify-center space-x-4 flex-grow left-2/4 pb-5 md:pb-0">
                     <button className="text-black dark:text-white"></button>
-                    <button className="invisible fixed sm:visible sm:static">
+                    <button onClick={back} className="invisible fixed sm:visible sm:static">
                         <BackwardIcon theme='solid' className="h-9 w-9" aria-hidden="true"></BackwardIcon>
                     </button>
                     <button onClick={togglePlay}>
                         {playing ? <PauseIcon className="h-9 w-9" aria-hidden="true"></PauseIcon> : <PlayIcon theme='solid' className="h-9 w-9" aria-hidden="true"></PlayIcon>}
                         {/* <Icon src={paused ? Play : Pause} theme='solid' class="h-9 w-9" aria-hidden="true" /> */}
                     </button>
-                    <button>
+                    <button onClick={skip}>
                         <ForwardIcon theme='solid' className="h-9 w-9" aria-hidden="true"></ForwardIcon>
                         {/* <Icon src={Forward} theme='solid' class="h-9 w-9" aria-hidden="true" /> */}
                     </button>

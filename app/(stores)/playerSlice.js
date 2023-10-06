@@ -1,18 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-export const counterSlice = createSlice({
-  name: 'counter',
+export const playerSlice = createSlice({
+  name: 'player',
   initialState: {
-    value: {title: "Not Playing"}
+    value: {title: "Not Playing"},
+    queue: [],
+    queue_pos: 0
   },
   reducers: {
     set: (state, action) => {
-      console.log('a', action)
       state.value = action.payload
-    }
+    },
+    set_queue: (state, action) => {
+      state.queue = action.payload.tracks;
+      state.queue_pos = action.payload.queue_pos;
+    },
   }
 })
 
-export const { set } = counterSlice.actions
+export const { set } = playerSlice.actions
+export const { set_queue } = playerSlice.actions
 
-export default counterSlice.reducer
+export default playerSlice.reducer
