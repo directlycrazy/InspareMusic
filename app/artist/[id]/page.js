@@ -40,7 +40,7 @@ export default function album({ params }) {
 						subtitle: `${playlist?.fans} fans`
 					};
 					return (
-						<Link href={`/album/${playlist.id}`}>
+						<Link key={index} href={`/album/${playlist.id}`}>
 							<Card {...a}></Card>
 						</Link>
 					)

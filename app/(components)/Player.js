@@ -13,6 +13,8 @@ export default function Player(props) {
     const [playing, setPlaying] = useState(false);
     const [duration, setDuration] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
+    const [tooltipData, setTooltipData] = useState({ style: { visibility: 'hidden' } });
+    const tooltipRef = useRef(null);
     const progress = useRef(null);
     const audioRef = useRef(null);
 
@@ -36,23 +38,6 @@ export default function Player(props) {
         playing ? audioRef.current.pause() : audioRef.current.play();
     }
 
-    async function play() {
-        if (localStorage.account_key) {
-            let a = await fetch(`https://api-music.inspare.cc/request_streamkey/${localStorage.account_key}`);
-            audioRef.current.src = `https://api-music.inspare.cc/lossless/${localStorage.account_key}/${track.id}.mp3`;
-            audioRef.current.load();
-            audioRef.current.play();
-            audioRef.current.volume = volume;
-        } else {
-            if (track?.preview) {
-                audioRef.current.src = track.preview;
-                audioRef.current.load();
-                audioRef.current.play();
-                audioRef.current.volume = volume;
-            }
-        }
-    }
-
     function skip() {
         if (queue_pos >= queue.length - 1) return;
         dispatch(set_queue({
@@ -71,6 +56,81 @@ export default function Player(props) {
         dispatch(set(queue[queue_pos - 1]));
     }
 
+    function mediaSession() {
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: track?.title,
+            artist: track?.artist?.name,
+            album: track?.album?.title,
+            artwork: [
+                { src: `https://music-proxy.inspare.cc/image?q=https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/96x96-000000-80-0-0.jpg`, sizes: '96x96', type: 'image/jpg' },
+                { src: `https://music-proxy.inspare.cc/image?q=https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/128x128-000000-80-0-0.jpg`, sizes: '128x128', type: 'image/jpg' },
+                { src: `https://music-proxy.inspare.cc/image?q=https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/192x192-000000-80-0-0.jpg`, sizes: '192x192', type: 'image/jpg' },
+                { src: `https://music-proxy.inspare.cc/image?q=https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/256x256-000000-80-0-0.jpg`, sizes: '256x256', type: 'image/jpg' },
+                { src: `https://music-proxy.inspare.cc/image?q=https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/384x384-000000-80-0-0.jpg`, sizes: '384x384', type: 'image/jpg' },
+                { src: `https://music-proxy.inspare.cc/image?q=https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/512x512-000000-80-0-0.jpg`, sizes: '512x512', type: 'image/jpg' },
+                { src: `https://music-proxy.inspare.cc/image?q=https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/1000x1000-000000-80-0-0.jpg`, sizes: '1000x1000', type: 'image/jpg' }
+            ]
+        });
+        navigator.mediaSession.setActionHandler('previoustrack', () => {
+            back();
+        });
+        navigator.mediaSession.setActionHandler('nexttrack', () => {
+            skip();
+        });
+        navigator.mediaSession.setActionHandler('play', () => {
+            togglePlay();
+        });
+        navigator.mediaSession.setActionHandler('pause', () => {
+            togglePlay();
+        });
+        navigator.mediaSession.setActionHandler('seekto', (details) => {
+            if (details.fastSeek && 'fastSeek' in document.querySelector('audio')) {
+                document.querySelector('audio').fastSeek(details.seekTime);
+                return;
+            }
+            setCurrentTime(details.seekTime);
+        });
+    }
+
+    async function play() {
+        if (localStorage.account_key) {
+            let a = await fetch(`https://api-music.inspare.cc/request_streamkey/${localStorage.account_key}`);
+            audioRef.current.src = `https://api-music.inspare.cc/lossless/${localStorage.account_key}/${track.id}.mp3`;
+            audioRef.current.load();
+            await audioRef.current.play();
+            mediaSession();
+            audioRef.current.volume = volume;
+        } else {
+            if (track?.preview) {
+                audioRef.current.src = track.preview;
+                audioRef.current.load();
+                await audioRef.current.play();
+                mediaSession();
+                audioRef.current.volume = volume;
+            }
+        }
+    }
+
+    function tooltip(e) {
+        let percentage = (e.pageX / window.innerWidth) * 100;
+        let point_time = (percentage / 100) * duration;
+        let readable = formatTime(point_time);
+        setTooltipData({
+            value: readable,
+            style: {
+                left: e.clientX - 25,
+                top: document.documentElement.clientHeight - 125,
+                visibility: 'visible'
+            }
+        });
+    }
+
+    function seek(e) {
+        let outside = document.querySelectorAll('#player_progress')[0];
+        let percentage = Math.floor((e.pageX / outside.offsetWidth) * 100);
+        document.querySelector('audio').currentTime = Math.floor(duration * (percentage / 100));
+    }
+
     useEffect(() => {
         const audio = audioRef.current;
         const handlePlay = () => setPlaying(true);
@@ -84,7 +144,6 @@ export default function Player(props) {
             setCurrentTime(current);
             setPercentage((current / audioRef.current.duration) * 100);
         });
-
         return () => {
             audio.removeEventListener("play", handlePlay);
             audio.removeEventListener("pause", handlePause);
@@ -99,11 +158,14 @@ export default function Player(props) {
 
     return (
         <>
-            {/* <div id="progress-bar-tooltip" class='fixed text-black z-100 bg-white dark:bg-zinc-600 dark:text-white rounded-lg p-2' style='z-index: 1000; visibility: {tooltip_data.visible ? 'visible' : 'hidden'}; top: {tooltip_data.top}px; left: {tooltip_data.left}px;'>{tooltip_data.value}</div> */}
+            <div id="progress-bar-tooltip" ref={tooltipRef} className='fixed text-black z-100 bg-white dark:bg-zinc-600 dark:text-white rounded-lg p-2' style={tooltipData?.style}>{tooltipData?.value}</div>
             <div className="w-full bg-white dark:bg-zinc-800 pb-5 md:pb-2">
                 <div
                     className="relative h-4 dark:bg-zinc-700"
                     id="player_progress"
+                    onMouseMove={tooltip}
+                    onClick={(e) => { seek(e); }}
+                    onMouseLeave={() => { setTooltipData({ style: { visibility: 'hidden' } }); }}
                     style={{ height: 5, marginBottom: 66 }}
                 >
                     <div className="absolute h-full bg-indigo-600" ref={progress} id="player_progress_bar" style={{ width: `${percentage}%` }} />
@@ -135,11 +197,9 @@ export default function Player(props) {
                     </button>
                     <button onClick={togglePlay}>
                         {playing ? <PauseIcon className="h-9 w-9" aria-hidden="true"></PauseIcon> : <PlayIcon theme='solid' className="h-9 w-9" aria-hidden="true"></PlayIcon>}
-                        {/* <Icon src={paused ? Play : Pause} theme='solid' class="h-9 w-9" aria-hidden="true" /> */}
                     </button>
                     <button onClick={skip}>
                         <ForwardIcon theme='solid' className="h-9 w-9" aria-hidden="true"></ForwardIcon>
-                        {/* <Icon src={Forward} theme='solid' class="h-9 w-9" aria-hidden="true" /> */}
                     </button>
                 </div>
                 <div className="flex items-center justify-end space-x-4 invisible fixed md:absolute md:visible right-0 mr-3">
@@ -148,7 +208,6 @@ export default function Player(props) {
                     </button>
                     <button>
                         <SpeakerWaveIcon className="h-6 w-6"></SpeakerWaveIcon>
-                        {/* <Icon src={SpeakerWave} theme='solid' class="h-6 w-6" aria-hidden="true" /> */}
                     </button>
                     <input
                         type="range"

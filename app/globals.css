@@ -13,7 +13,6 @@
   background-repeat: no-repeat;
   background-size: cover;
   filter: blur(50px);
-
   height: 256px;
   width: 100vw;
   overflow: auto;
@@ -22,6 +21,10 @@
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
+  }
+
+  body {
+    background-color: #27272a;
   }
 }
 

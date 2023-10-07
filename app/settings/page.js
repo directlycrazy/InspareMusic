@@ -64,13 +64,11 @@ export default function Settings() {
 					</label>
 					<div className="mt-2">
 						<select
-							id="country"
-							name="country"
-							autoComplete="country-name"
+							defaultValue={3}
 							className="block w-full rounded-md border-0 p-2 bg-white dark:bg-zinc-700 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 						>
 							<option value={1}>128kbps (MP3)</option>
-							<option value={3} selected="">
+							<option value={3}>
 								320kbps (MP3)
 							</option>
 							<option value={9}>1411kbps (FLAC)</option>

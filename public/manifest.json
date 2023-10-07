@@ -1,0 +1,17 @@
+{
+	"name": "Inspare Music",
+	"short_name": "Inspare Music",
+	"theme_color": "#27262b",
+	"background_color": "#18191a",
+	"display": "standalone",
+	"orientation": "portrait",
+	"scope": "/",
+	"start_url": "/",
+	"icons": [
+		{
+			"src": "/img/logo.png",
+			"type": "image/png",
+			"sizes": "512x512"
+		}
+	]
+}

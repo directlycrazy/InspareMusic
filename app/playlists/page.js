@@ -34,7 +34,7 @@ export default function Playlists() {
 						img: songs?.[0]?.album?.cover_medium
 					};
 					return (
-						<Link href={`/playlists/${playlist.id}`}>
+						<Link key={index} href={`/playlists/${playlist.id}`}>
 							<Card {...a}></Card>
 						</Link>
 					)
