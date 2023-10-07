@@ -277,12 +277,9 @@ export default function RootLayout({ children }) {
 									<div className="fixed inset-0 z-10">
 										<div className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white dark:bg-zinc-800 px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
 											<div className="flex items-center justify-between">
-												<a href="#" className="-m-1.5 p-1.5">
-													<icon
-														src="{Play}"
-														className="h-8 w-auto text-black dark:text-white"
-													/>
-												</a>
+												<Link href="/" className="-m-1.5 p-1.5">
+													<PlayIcon className="h-8 w-auto text-black dark:text-white"></PlayIcon>
+												</Link>
 												<button
 													type="button"
 													className="-m-2.5 rounded-md p-2.5 text-gray-700 dark:text-white"
