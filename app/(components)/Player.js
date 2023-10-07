@@ -220,6 +220,7 @@ export default function Player(props) {
                     <span className="text-sm font-bold">{formatTime(currentTime)} / {formatTime(duration)}</span>
                 </div>
             </div>
+            <div id='song_id' className='fixed invisible'>{track?.id}</div>
             <audio volume={volume} onEnded={skip} autoPlay ref={audioRef}></audio>
         </>
     );

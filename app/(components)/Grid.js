@@ -30,6 +30,19 @@ export default function Grid(props) {
 		}
 	}
 
+	function copy(track) {
+		const e = document.createElement('textarea');
+		if (isNaN(track.id)) {
+			e.value = `https://youtu.be/${track.id}`;
+		} else {
+			e.value = `https://music.inspare.cc/track/${track.id}`;
+		}
+		document.body.appendChild(e);
+		e.select();
+		document.execCommand('copy');
+		document.body.removeChild(e);
+	}
+
 	function play(track, index) {
 		dispatch(set(track));
 		dispatch(set_queue({
@@ -74,13 +87,10 @@ export default function Grid(props) {
 										<Menu.Items style={{ zIndex: 1000 }} className="absolute right-0 mt-2 w-56 origin-top-right divide-y light:divide-gray-100 rounded-md bg-white dark:bg-zinc-800 dark:text-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
 											<div className="px-1 py-1">
 												<Menu.Item>
-													<a href='#' className='group flex w-full items-center rounded-md px-2 py-2 text-sm'>Copy Link</a>
+													<a href='#' className='group flex w-full items-center rounded-md px-2 py-2 text-sm' onClick={() => { copy(track); }}>Copy Link</a>
 												</Menu.Item>
 												<Menu.Item>
 													<a href='#' className='group flex w-full items-center rounded-md px-2 py-2 text-sm' onClick={() => { openModal(track); }}>Add to Playlist</a>
-												</Menu.Item>
-												<Menu.Item>
-													<a href='#' className='group flex w-full items-center rounded-md px-2 py-2 text-sm'>Favourite</a>
 												</Menu.Item>
 											</div>
 										</Menu.Items>
