@@ -95,7 +95,12 @@ export default function Player(props) {
     async function play() {
         if (localStorage.account_key) {
             let a = await fetch(`https://api-music.inspare.cc/request_streamkey/${localStorage.account_key}`);
-            audioRef.current.src = `https://api-music.inspare.cc/lossless/${localStorage.account_key}/${track.id}.mp3`;
+            if (track.youtube) {
+                console.log('Playing track from YouTube');
+                audioRef.current.src = `https://api-music.inspare.cc/stream/${localStorage.account_key}/${track.id}.mp3?type=yt`;
+            } else {
+                audioRef.current.src = `https://api-music.inspare.cc/lossless/${localStorage.account_key}/${track.id}.mp3`;
+            }
             audioRef.current.load();
             await audioRef.current.play();
             mediaSession();
