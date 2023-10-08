@@ -1,33 +1,21 @@
-'use client';
+import Track from "./Track";
 
-import Header from "@/app/(components)/Header";
-import Grid from "@/app/(components)/Grid";
-import { useEffect, useState } from "react";
+export async function generateMetadata({ params, searchParams }, parent) {
+	const id = params.id;
+	const data = await fetch(`https://api-music.inspare.cc/track/${id}`).then((res) => res.json());
 
-export default function album({ params }) {
-	const [data, setData] = useState({});
-	const [tracks, setTracks] = useState([]);
+	return {
+		title: `${data?.title} on Inspare Music`,
+		description: `${data?.title} by ${data?.artist?.name}`,
+		themeColor: '#4338ca',
+		openGraph: {
+			images: data?.album?.cover_medium
+		}
+	};
+}
 
-	useEffect(() => {
-		const fetchData = async () => {
-			let res = await fetch(`https://api-music.inspare.cc/track/${params.id}`);
-			res = await res.json();
-			setData({
-				img: res?.album?.cover_medium,
-				type: `Track`,
-				title: res?.title,
-				artist: res?.artist?.name,
-				subtitle: `${res?.release_date} • 1 song`
-			});
-			setTracks([res]);
-		};
-		fetchData().catch(console.error);
-	}, []);
-
+export default function track({ params }) {
 	return (
-		<>
-			<Header {...data} tracks={tracks}></Header>
-			<Grid tracks={tracks}></Grid>
-		</>
+		<Track params={params}></Track>
 	);
 }
