@@ -4,6 +4,7 @@ import Header from "@/app/(components)/Header";
 import Grid from "@/app/(components)/Grid";
 import { NextSeo } from "next-seo";
 import { useEffect, useState } from "react";
+import Loading from "@/app/(components)/Loading";
 
 export default function Track({ params }) {
 	const [data, setData] = useState({});
@@ -29,6 +30,7 @@ export default function Track({ params }) {
 		<>
 			<NextSeo title={tracks?.[0]?.title}></NextSeo>
 			<Header {...data} tracks={tracks}></Header>
+			{!tracks?.length && <Loading></Loading>}
 			<Grid tracks={tracks}></Grid>
 		</>
 	);

@@ -4,6 +4,7 @@ import Header from "@/app/(components)/Header";
 import Card from "../(components)/Card";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Loading from "../(components)/Loading";
 
 export default function Playlists() {
 	const data = {
@@ -40,6 +41,7 @@ export default function Playlists() {
 						</Link>
 					);
 				})}
+				{!playlists?.length && <Loading></Loading>}
 			</div>
 		</>
 	);

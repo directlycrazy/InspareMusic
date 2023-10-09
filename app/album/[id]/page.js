@@ -3,6 +3,7 @@
 import Header from "@/app/(components)/Header";
 import Grid from "@/app/(components)/Grid";
 import { useEffect, useState } from "react";
+import Loading from "@/app/(components)/Loading";
 
 export default function album({ params }) {
 	const [data, setData] = useState({});
@@ -26,6 +27,7 @@ export default function album({ params }) {
 
 	return (
 		<>
+			{!tracks?.length && <Loading></Loading>}
 			<Header {...data} tracks={tracks}></Header>
 			<Grid tracks={tracks}></Grid>
 		</>

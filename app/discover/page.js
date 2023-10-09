@@ -25,7 +25,8 @@ export default function Discover() {
 	return (
 		<>
 			<h1 className='font-bold text-4xl'>Trending Artists</h1>
-			<div className='flex pt-5 overflow-x-scroll pb-5'>
+			<div className='flex pt-5 overflow-x-auto pb-5'>
+				{!artists?.length && <Loading></Loading>}
 				{artists.map((artist, index) => {
 					let a = {
 						title: artist?.name,
@@ -38,9 +39,8 @@ export default function Discover() {
 					);
 				})}
 			</div>
-			<Suspense fallback={<Loading></Loading>}>
-				<Grid tracks={results}></Grid>
-			</Suspense>
+			{!results?.length && <Loading></Loading>}
+			<Grid tracks={results}></Grid>
 		</>
 	);
 }

@@ -5,6 +5,7 @@ import Grid from "@/app/(components)/Grid";
 import Link from "next/link";
 import Card from "@/app/(components)/Card";
 import { useEffect, useState } from "react";
+import Loading from "@/app/(components)/Loading";
 
 export default function album({ params }) {
 	const [data, setData] = useState({});
@@ -32,6 +33,7 @@ export default function album({ params }) {
 	return (
 		<>
 			<Header {...data}></Header>
+			{!playlists?.length && <Loading></Loading>}
 			<div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-5">
 				{playlists && playlists.length > 0 && playlists.map((playlist, index) => {
 					let a = {

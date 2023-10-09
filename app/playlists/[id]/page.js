@@ -3,6 +3,7 @@
 import Header from "@/app/(components)/Header";
 import Grid from "@/app/(components)/Grid";
 import { useEffect, useState } from "react";
+import Loading from "@/app/(components)/Loading";
 
 export default function album({ params }) {
 	const [data, setData] = useState({});
@@ -57,6 +58,7 @@ export default function album({ params }) {
 	return (
 		<>
 			<Header {...data} img={tracks?.[0]?.album?.cover_medium} subtitle={`${tracks?.length} songs`} tracks={tracks}></Header>
+			{!tracks?.length && <Loading></Loading>}
 			<Grid tracks={tracks}></Grid>
 		</>
 	);
