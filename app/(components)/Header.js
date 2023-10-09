@@ -48,7 +48,7 @@ export default function Header({img, title, type, artist, subtitle, tracks}) {
 					<img
 						src={img}
 						alt=""
-						className="max-w-xs rounded-2xl drop-shadow-2xl inline-block"
+						className="noselect_image max-w-xs rounded-2xl drop-shadow-2xl inline-block"
 						style={{ maxWidth: 232 }}
 					/>
 					<div className="inline-block md:ml-5">
