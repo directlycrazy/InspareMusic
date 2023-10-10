@@ -85,8 +85,11 @@ export default function Player(props) {
         });
         navigator.mediaSession.setActionHandler('seekto', (details) => {
             if (details.fastSeek && 'fastSeek' in document.querySelector('audio')) {
+                setCurrentTime(details.seekTime);
                 document.querySelector('audio').fastSeek(details.seekTime);
                 return;
+            } else {
+                document.querySelector('audio').currentTime = details.seekTime;
             }
             setCurrentTime(details.seekTime);
         });
