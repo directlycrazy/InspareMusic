@@ -166,21 +166,21 @@ export default function Player(props) {
 
     return (
         <>
-            <div id="progress-bar-tooltip" ref={tooltipRef} className='fixed text-black z-100 bg-white dark:bg-zinc-600 dark:text-white rounded-lg p-2' style={tooltipData?.style}>{tooltipData?.value}</div>
-            <div className="w-full bg-white dark:bg-zinc-800 pb-5 md:pb-2">
+            <div id="progress-bar-tooltip" ref={tooltipRef} className='fixed text-black z-100 bg-zinc-50 dark:bg-zinc-600 dark:text-white rounded-lg p-2' style={tooltipData?.style}>{tooltipData?.value}</div>
+            <div className="w-full bg-zinc-50 dark:bg-zinc-900 pb-5 md:pb-2">
                 <div
-                    className="relative h-4 dark:bg-zinc-700"
+                    className="relative h-4 bg-zinc-200 dark:bg-zinc-800"
                     id="player_progress"
                     onMouseMove={tooltip}
                     onClick={(e) => { seek(e); }}
                     onMouseLeave={() => { setTooltipData({ style: { visibility: 'hidden' } }); }}
                     style={{ height: 5, marginBottom: 66 }}
                 >
-                    <div className="absolute h-full bg-indigo-600" ref={progress} id="player_progress_bar" style={{ width: `${percentage}%` }} />
+                    <div className="absolute h-full bg-blue-600" ref={progress} id="player_progress_bar" style={{ width: `${percentage}%` }} />
                 </div>
             </div>
             <div
-                className="fixed bottom-0 left-0 w-full bg-white dark:bg-zinc-800 text-black dark:text-white p-4 flex items-center mb-2 mt-2"
+                className="fixed bottom-0 left-0 w-full bg-zinc-50 dark:bg-zinc-900 text-black dark:text-white p-4 flex items-center mb-2 mt-2"
                 style={{ height: 58 }}
             >
                 <div className="flex absolute items-center justify-start space-x-4 left-0 ml-3 pb-5 md:pb-0">

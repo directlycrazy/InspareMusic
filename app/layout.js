@@ -242,14 +242,14 @@ export default function RootLayout({ children }) {
 					media="screen and (device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
 					href="/splashscreens/8.3__iPad_Mini_portrait.png"
 				/>
-				<meta name="theme-color" content="#27272a" />
+				<meta name="theme-color" content="#18181b" />
 				<meta name="color-scheme" content="light dark" />
 			</head>
 			<body className={inter.className}>
 				<Provider store={store}>
 					<main className="flex flex-col h-screen z-10 dark:text-white">
 						<header
-							className="bg-white dark:bg-zinc-800 border-b dark:border-zinc-700 w-full justify-end fixed right-0"
+							className="bg-zinc-50 dark:bg-zinc-900 border-b dark:border-zinc-800 w-full justify-end fixed right-0"
 							style={{ zIndex: 100, WebkitAppRegion: "drag" }}
 						>
 							<nav
@@ -259,7 +259,7 @@ export default function RootLayout({ children }) {
 								<div className="flex lg:hidden">
 									<button
 										type="button"
-										className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700 dark:text-gray-300"
+										className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-zinc-700 dark:text-zinc-300"
 										onClick={() => { setMenuOpen(true); }}
 									>
 										<span className="sr-only">Open main menu</span>
@@ -267,7 +267,7 @@ export default function RootLayout({ children }) {
 									</button>
 								</div>
 								<div className="hidden lg:flex lg:flex-1 lg:justify-end">
-									<a href="#" id='global_back_button' className="text-sm font-semibold leading-6 text-gray-900 dark:text-gray-50">
+									<a href="#" id='global_back_button' className="text-sm font-semibold leading-6 text-zinc-900 dark:text-zinc-50">
 										Back
 									</a>
 								</div>
@@ -275,14 +275,14 @@ export default function RootLayout({ children }) {
 							{menuOpen && <>
 								<div className="lg:hidden">
 									<div className="fixed inset-0 z-10">
-										<div className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white dark:bg-zinc-800 px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+										<div className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white dark:bg-zinc-900 px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-zinc-900/10">
 											<div className="flex items-center justify-between">
 												<Link href="/" className="-m-1.5 p-1.5">
 													<PlayIcon className="h-8 w-auto text-black dark:text-white"></PlayIcon>
 												</Link>
 												<button
 													type="button"
-													className="-m-2.5 rounded-md p-2.5 text-gray-700 dark:text-white"
+													className="-m-2.5 rounded-md p-2.5 text-zinc-700 dark:text-white"
 													onClick={() => { setMenuOpen(false); }}
 												>
 													<span className="sr-only">Close menu</span>
@@ -290,11 +290,11 @@ export default function RootLayout({ children }) {
 												</button>
 											</div>
 											<div className="mt-6 flow-root">
-												<div className="-my-6 divide-y divide-gray-500/10">
+												<div className="-my-6 divide-y divide-zinc-500/10">
 													<div className="space-y-2 py-6">
 														{links.map((link, index) => {
 															return (
-																<Link key={index} onClick={() => { setMenuOpen(false); }} type='button' href={link[1]} className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-zinc-700">
+																<Link key={index} onClick={() => { setMenuOpen(false); }} type='button' href={link[1]} className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-zinc-900 dark:text-white hover:bg-zinc-50 dark:hover:bg-zinc-700">
 																	{link[0]}
 																</Link>
 															);
@@ -303,7 +303,7 @@ export default function RootLayout({ children }) {
 													<div className="py-6">
 														<a
 															href="#"
-															className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-zinc-700"
+															className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-zinc-900 dark:text-white hover:bg-zinc-50 dark:hover:bg-zinc-700"
 															onClick={login}
 														>
 															{username}
@@ -318,7 +318,7 @@ export default function RootLayout({ children }) {
 						</header>
 						<div className="flex flex-row h-full">
 							<aside
-								className="w-1/8 overflow-y-auto border-r bg-white dark:border-zinc-700 dark:bg-zinc-800 text-black dark:text-white invisible fixed md:static md:visible z-1000"
+								className="w-1/8 overflow-y-auto border-r bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 text-black dark:text-white invisible fixed md:static md:visible z-1000"
 								style={{ width: 300, zIndex: 100 }}
 							>
 								<div className="mt-10 ml-5 mr-5">
@@ -342,7 +342,7 @@ export default function RootLayout({ children }) {
 									<div className="absolute bottom-0 left-0 ml-5 mb-20">
 										<button
 											type="button"
-											className="inline-flex items-center rounded-md w-full bg-transparent mb-2 px-3 py-2 text-sm font-semibold text-black dark:text-white shadow-sm"
+											className="inline-flex items-center rounded-md w-full bg-transparent mb-2 px-3 py-2 text-sm font-semibold text-black dark:text-white"
 											onClick={login}
 										>
 											<UserIcon className="-ml-0.5 mr-1.5 h-5 w-5"></UserIcon>
@@ -353,7 +353,7 @@ export default function RootLayout({ children }) {
 								</div>
 							</aside>
 							<main
-								className="w-full overflow-y-auto bg-white dark:bg-zinc-900 mb-20"
+								className="w-full overflow-y-auto bg-white dark:bg-zinc-950 mb-20"
 								style={{ marginTop: 72, zIndex: 10 }}
 							>
 								<div className='p-5 md:p-10'>
@@ -362,7 +362,7 @@ export default function RootLayout({ children }) {
 							</main>
 						</div>
 						<div
-							className="bg-white w-full dark:bg-zinc-800 border-t dark:border-zinc-700 fixed bottom-0"
+							className="bg-white w-full dark:bg-zinc-900 border-t dark:border-zinc-800 fixed bottom-0"
 							style={{ zIndex: 1000 }}
 						>
 							<Player></Player>
