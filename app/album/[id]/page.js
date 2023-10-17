@@ -1,9 +1,9 @@
 'use client';
 
-import Header from "@/app/(components)/Header";
-import Grid from "@/app/(components)/Grid";
+import Header from "@/app/components/Header";
+import Grid from "@/app/components/Grid";
 import { useEffect, useState } from "react";
-import Loading from "@/app/(components)/Loading";
+import Loading from "@/app/components/Loading";
 
 export default function album({ params }) {
 	const [data, setData] = useState({});

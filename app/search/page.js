@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from "react";
-import Grid from "../(components)/Grid";
-import Loading from "../(components)/Loading";
+import Grid from "../components/Grid";
+import Loading from "../components/Loading";
 
 export default function Search() {
 	const [results, setResults] = useState({});

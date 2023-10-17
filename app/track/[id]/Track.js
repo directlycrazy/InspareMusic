@@ -1,10 +1,10 @@
 'use client';
 
-import Header from "@/app/(components)/Header";
-import Grid from "@/app/(components)/Grid";
+import Header from "@/app/components/Header";
+import Grid from "@/app/components/Grid";
 import { NextSeo } from "next-seo";
 import { useEffect, useState } from "react";
-import Loading from "@/app/(components)/Loading";
+import Loading from "@/app/components/Loading";
 
 export default function Track({ params }) {
 	const [data, setData] = useState({});

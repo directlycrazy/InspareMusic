@@ -4,13 +4,14 @@ import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import { Menu, Transition, Dialog } from '@headlessui/react';
 import { Fragment, useState } from "react";
 import { useDispatch } from "react-redux";
-import { set, set_queue } from '../(stores)/playerSlice';
+import { set, set_queue } from '../stores/playerSlice';
 
 export default function Grid(props) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [playlists, setPlaylists] = useState([]);
 	const [modalTrack, setModalTrack] = useState(null);
 	let tracks = props.tracks;
+
 	const dispatch = useDispatch();
 
 	async function openModal(track) {
@@ -87,10 +88,10 @@ export default function Grid(props) {
 										<Menu.Items style={{ zIndex: 1000 }} className="absolute right-0 mt-2 w-56 origin-top-right divide-y light:divide-zinc-100 rounded-md bg-white dark:bg-zinc-900 dark:text-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
 											<div className="px-1 py-1">
 												<Menu.Item>
-													<a href='#' className='group flex w-full items-center rounded-md px-2 py-2 text-sm' onClick={() => { copy(track); }}>Copy Link</a>
+													<a className='group flex w-full items-center rounded-md px-2 py-2 text-sm' onClick={() => { copy(track); }}>Copy Link</a>
 												</Menu.Item>
 												<Menu.Item>
-													<a href='#' className='group flex w-full items-center rounded-md px-2 py-2 text-sm' onClick={() => { openModal(track); }}>Add to Playlist</a>
+													<a className='group flex w-full items-center rounded-md px-2 py-2 text-sm' onClick={() => { openModal(track); }}>Add to Playlist</a>
 												</Menu.Item>
 											</div>
 										</Menu.Items>

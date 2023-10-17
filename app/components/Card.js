@@ -1,6 +1,6 @@
 export default function Card({ title, subtitle, img }) {
 	return (
-		<div className="max-w-sm mr-3 bg-white border border-zinc-200 rounded-lg shadow dark:bg-zinc-900 dark:border-zinc-800 h-full">
+		<div className="max-w-sm mr-3 bg-white border border-zinc-200 rounded-lg shadow dark:bg-zinc-900 dark:border-zinc-800 h-full" style={{ minWidth: 130 }}>
 			<img
 				className="rounded-lg w-full"
 				src={img}

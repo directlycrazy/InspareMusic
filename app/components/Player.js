@@ -2,7 +2,7 @@ import { BackwardIcon, PlayIcon, ForwardIcon, SpeakerWaveIcon, PauseIcon } from 
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { set, set_queue } from "../(stores)/playerSlice";
+import { set, set_queue } from "../stores/playerSlice";
 
 export default function Player(props) {
     const track = useSelector(state => state.player.value);

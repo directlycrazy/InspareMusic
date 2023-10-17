@@ -1,12 +1,13 @@
 'use client';
 
-import Header from "@/app/(components)/Header";
-import Grid from "@/app/(components)/Grid";
+import Header from "@/app/components/Header";
+import Grid from "@/app/components/Grid";
 import { useEffect, useState } from "react";
-import Loading from "@/app/(components)/Loading";
+import Loading from "@/app/components/Loading";
 
 export default function album({ params }) {
 	const [data, setData] = useState({});
+	const [loadFinished, setLoadFinished] = useState(false);
 	const [tracks, setTracks] = useState([]);
 
 	useEffect(() => {
@@ -19,6 +20,7 @@ export default function album({ params }) {
 				artist: 'Created by You',
 				subtitle: `0 songs`
 			});
+			if (!res.data) return setLoadFinished(true);
 
 			let t = [];
 
@@ -50,6 +52,7 @@ export default function album({ params }) {
 				t.push(track);
 			});
 
+			setLoadFinished(true);
 			setTracks(t);
 		};
 		fetchData().catch(console.error);
@@ -58,7 +61,7 @@ export default function album({ params }) {
 	return (
 		<>
 			<Header {...data} img={tracks?.[0]?.album?.cover_medium} subtitle={`${tracks?.length} songs`} tracks={tracks}></Header>
-			{!tracks?.length && <Loading></Loading>}
+			{!tracks?.length && !loadFinished && <Loading></Loading>}
 			<Grid tracks={tracks}></Grid>
 		</>
 	);

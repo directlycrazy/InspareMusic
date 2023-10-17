@@ -2,9 +2,9 @@
 
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
-import Grid from "../(components)/Grid";
-import Card from "../(components)/Card";
-import Loading from "../(components)/Loading";
+import Grid from "../components/Grid";
+import Card from "../components/Card";
+import Loading from "../components/Loading";
 
 export default function Discover() {
 	const [results, setResults] = useState([]);
