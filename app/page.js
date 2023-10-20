@@ -26,7 +26,9 @@ export default function Home() {
 		if (localStorage.account_key == undefined) return;
 		let res = await fetch(`https://api-music.inspare.cc/history/${localStorage.account_key}`)
 		res = await res.json();
-		if (res) setRecentlyPlayed(Object.values(res));
+		try {
+			if (res) setRecentlyPlayed(Object.values(res)?.reverse());
+		} catch (e) {}
 		let picks = await fetch(`https://api-music.inspare.cc/radio`);
 		picks = await picks.json();
 		setQuickPicks(picks?.data);
@@ -40,7 +42,7 @@ export default function Home() {
 		<>
 			{recentlyPlayed.length === 0 && <Homepage></Homepage>}
 			{recentlyPlayed.length > 0 && <>
-				<h1 className="mt-2 text-3xl font-black tracking-tight text-zinc-900 dark:text-white sm:text-4xl">Recently Played</h1>
+				<h1 className="mt-2 text-2xl font-black tracking-tight text-zinc-900 dark:text-white sm:text-4xl">Recently Played</h1>
 				<div className='flex pt-5 overflow-x-auto pb-5'>
 					{recentlyPlayed.map((track, index) => {
 						return (
@@ -50,7 +52,7 @@ export default function Home() {
 						)
 					})}
 				</div>
-				<h1 className="mt-4 text-3xl font-black tracking-tight text-zinc-900 dark:text-white sm:text-4xl">Quick Picks</h1>
+				<h1 className="mt-4 text-2xl font-black tracking-tight text-zinc-900 dark:text-white sm:text-4xl">Quick Picks</h1>
 				<div className='flex pt-5 overflow-x-auto pb-5'>
 					{quickPicks.map((track, index) => {
 						return (

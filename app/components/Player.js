@@ -98,6 +98,11 @@ export default function Player(props) {
     async function play() {
         if (localStorage.account_key) {
             let a = await fetch(`https://api-music.inspare.cc/request_streamkey/${localStorage.account_key}`);
+            fetch(`https://api-music.inspare.cc/track/${track.id}`).then((res) => res.json()).then(t => {
+                if (!t.title) return;
+                dispatch(set(t));
+                fetch(`https://api-music.inspare.cc/favourited/${localStorage.account_key}/${track.id}`);
+            });
             if (track.youtube) {
                 console.log('Playing track from YouTube');
                 audioRef.current.src = `https://api-music.inspare.cc/stream/${localStorage.account_key}/${track.id}.mp3?type=yt`;
@@ -162,7 +167,7 @@ export default function Player(props) {
     useEffect(() => {
         if (!track?.id) return;
         play();
-    }, [track]);
+    }, [track?.id]);
 
     return (
         <>
@@ -187,13 +192,18 @@ export default function Player(props) {
                     {track?.album?.cover_small ? <img src={track?.album?.cover_small} alt="Album Cover" className="w-12 h-12 rounded-md"></img> : null}
                     <div>
                         <h3 className="text-lg font-bold cursor-pointer">
-                            <Link href={`/album/${track?.album?.id}`}>
+                            <Link prefetch={false} href={`/album/${track?.album?.id}`}>
                                 {track?.title}
                             </Link>
                         </h3>
                         <p className="text-sm cursor-pointer">
-                            <Link href={`/artist/${track?.artist?.id}`}>
-                                {track?.artist?.name}
+                            <Link prefetch={false} href={`/artist/${track?.artist?.id}`}>
+                                {track?.artist?.name}{track?.contributors?.length > 1 && <span>, </span>}{track?.contributors?.map((artist, i) => {
+                                    if (artist?.name === track?.artist?.name) return null;
+                                    return (
+                                        <span key={i}>{artist?.name}{i !== track.contributors.length - 1 && <span>, </span>}</span>
+                                    );
+                                })}
                             </Link>
                         </p>
                     </div>
@@ -211,9 +221,6 @@ export default function Player(props) {
                     </button>
                 </div>
                 <div className="flex items-center justify-end space-x-4 invisible fixed md:absolute md:visible right-0 mr-3">
-                    <button>
-                        {/* <Icon src={Microphone} theme='solid' class="h-6 w-6" aria-hidden="true" /> */}
-                    </button>
                     <button>
                         <SpeakerWaveIcon className="h-6 w-6"></SpeakerWaveIcon>
                     </button>

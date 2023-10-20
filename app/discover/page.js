@@ -24,7 +24,7 @@ export default function Discover() {
 
 	return (
 		<>
-			<h1 className='font-bold text-4xl'>Trending Artists</h1>
+			<h1 className='font-black text-2xl md:text-4xl'>Trending Artists</h1>
 			<div className='flex pt-5 overflow-x-auto pb-5'>
 				{!artists?.length && <Loading></Loading>}
 				{artists.map((artist, index) => {
@@ -40,6 +40,7 @@ export default function Discover() {
 				})}
 			</div>
 			{!results?.length && <Loading></Loading>}
+			<h1 className='font-black text-2xl md:text-4xl mt-5'>Top 100 Hot Songs</h1>
 			<Grid tracks={results}></Grid>
 		</>
 	);
