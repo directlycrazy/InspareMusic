@@ -4,10 +4,12 @@ import Header from "@/app/components/Header";
 import Grid from "@/app/components/Grid";
 import { useEffect, useState } from "react";
 import Loading from "@/app/components/Loading";
+import ImageCard from "@/app/components/ImageCard";
 
 export default function album({ params }) {
 	const [data, setData] = useState({});
 	const [loadFinished, setLoadFinished] = useState(false);
+	const [image, setImage] = useState(null);
 	const [tracks, setTracks] = useState([]);
 
 	useEffect(() => {
@@ -54,13 +56,16 @@ export default function album({ params }) {
 
 			setLoadFinished(true);
 			setTracks(t);
+
+			let image = await ImageCard(t.slice(0, 4))
+			setImage(image);
 		};
 		fetchData().catch(console.error);
 	}, []);
 
 	return (
 		<>
-			<Header {...data} img={tracks?.[0]?.album?.cover_medium} subtitle={`${tracks?.length} songs`} tracks={tracks}></Header>
+			<Header {...data} img={image} subtitle={`${tracks?.length} songs`} tracks={tracks}></Header>
 			{!tracks?.length && !loadFinished && <Loading></Loading>}
 			<Grid tracks={tracks}></Grid>
 		</>

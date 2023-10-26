@@ -8,6 +8,7 @@ import Link from "next/link";
 import fetchTimeout from '../components/fetchTimeout';
 import Loading from "../components/Loading";
 import { useRouter } from "next/navigation";
+import ImageCard from "../components/ImageCard";
 
 export default function Playlists() {
 	const router = useRouter();
@@ -54,15 +55,20 @@ export default function Playlists() {
 		<>
 			<Header {...data} artist={`${playlists?.length} playlists`}></Header>
 			<div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-5">
-				{playlists && playlists.length > 0 && playlists.map((playlist, index) => {
+				{playlists && playlists.length > 0 && playlists.map(async (playlist, index) => {
 					let songs;
+
 					if (playlist?.data) {
 						songs = Object.values(playlist?.data);
 					}
+
+					let image = await ImageCard(songs.slice(0, 4))
+
 					let a = {
 						title: playlist?.name,
-						img: songs?.[0]?.album?.cover_medium
+						img: image ? image : songs?.[0].album?.cover_medium
 					};
+					
 					return (
 						<Link key={index} href={`/playlists/${playlist.id}`}>
 							<Card {...a}></Card>
