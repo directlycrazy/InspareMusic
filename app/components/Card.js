@@ -5,6 +5,7 @@ export default function Card({ title, subtitle, img }) {
 				className="rounded-lg w-full"
 				src={img}
 				alt=""
+				loading="lazy"
 				style={{ minWidth: 130 }}
 			/>
 			<div className="p-5">

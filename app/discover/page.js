@@ -39,8 +39,8 @@ export default function Discover() {
 					);
 				})}
 			</div>
-			{!results?.length && <Loading></Loading>}
 			<h1 className='font-black text-2xl md:text-4xl mt-5'>Top 100 Hot Songs</h1>
+			{!results?.length && <Loading></Loading>}
 			<Grid tracks={results}></Grid>
 		</>
 	);
