@@ -28,8 +28,8 @@ export default function album({ params }) {
 
 	return (
 		<>
-			{!tracks?.length && <Loading></Loading>}
 			<Header {...data} tracks={tracks}></Header>
+			{!tracks?.length && <Loading></Loading>}
 			<Grid tracks={tracks}></Grid>
 		</>
 	);
