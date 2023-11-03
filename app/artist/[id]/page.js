@@ -6,6 +6,7 @@ import Link from "next/link";
 import Card from "@/app/components/Card";
 import { useEffect, useState } from "react";
 import Loading from "@/app/components/Loading";
+import CardList from "@/app/components/CardList";
 
 export default function album({ params }) {
 	const [data, setData] = useState({});
@@ -34,7 +35,7 @@ export default function album({ params }) {
 		<>
 			<Header {...data}></Header>
 			{!playlists?.length && <Loading></Loading>}
-			<div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-5">
+			<CardList>
 				{playlists && playlists.length > 0 && playlists.map((playlist, index) => {
 					let a = {
 						title: playlist?.title,
@@ -47,7 +48,7 @@ export default function album({ params }) {
 						</Link>
 					)
 				})}
-			</div>
+			</CardList>
 		</>
 	);
 }

@@ -52,13 +52,13 @@ export default function Header({img, title, type, artist, subtitle, tracks}) {
 						style={{ maxWidth: 232 }}
 					/>
 					<div className="inline-block md:ml-5">
-						<p className="text-zinc-300 relative">
+						<p className="text-zinc-300 drop-shadow-lg relative">
 							{type}
 						</p>
-						<h1 className="font-black text-4xl mb-1 lg:text-8xl relative text-black dark:text-white">
+						<h1 className="font-black text-4xl mb-1 lg:text-8xl relative drop-shadow-lg text-white">
 							{title}
 						</h1>
-						<p className="text-zinc-400 dark:text-zinc-200 mb-1 ellipsis max-w-xs md:max-w-none">
+						<p className="text-zinc-100 drop-shadow-lg mb-1 ellipsis max-w-xs md:max-w-none">
 							{artist}{subtitle && <> &bull; {subtitle}</>}
 						</p>
 					</div>

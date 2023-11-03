@@ -8,6 +8,7 @@ import Link from "next/link";
 import fetchTimeout from '../components/fetchTimeout';
 import Loading from "../components/Loading";
 import ImageCard from "../components/ImageCard";
+import CardList from "../components/CardList";
 
 function Playlist(playlist) {
 	const [image, setImage] = useState(null);
@@ -71,7 +72,7 @@ export default function Playlists() {
 	return (
 		<>
 			<Header {...data} artist={`${playlists?.length} playlists`}></Header>
-			<div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-5">
+			<CardList>
 				{playlists && playlists.length > 0 && playlists.map((playlist, index) => {
 					return (
 						<Playlist key={index} {...playlist}></Playlist>
@@ -81,7 +82,7 @@ export default function Playlists() {
 				<button onClick={() => { setIsOpen(true); }}>
 					<Card title="Create New" img="https://ui-avatars.com/api/?name=%2B&background=222222&color=fff&size=512"></Card>
 				</button>
-			</div>
+			</CardList>
 			<Transition appear show={isOpen} as={Fragment}>
 				<Dialog as="div" className="relative z-10" onClose={() => { setIsOpen(false); }}>
 					<Transition.Child

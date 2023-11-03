@@ -266,7 +266,7 @@ export default function RootLayout({ children }) {
 									</button>
 								</div>
 								<div className="hidden md:flex md:flex-1 md:justify-end">
-									<a href="#" id='global_back_button' className="text-sm font-semibold leading-6 text-zinc-900 dark:text-zinc-50">
+									<a id='global_back_button' className="text-sm invisible font-semibold leading-6 text-zinc-900 dark:text-zinc-50">
 										Back
 									</a>
 								</div>
