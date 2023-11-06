@@ -100,7 +100,7 @@ export default function Player(props) {
             let a = await fetch(`https://api-music.inspare.cc/request_streamkey/${localStorage.account_key}`);
             fetch(`https://api-music.inspare.cc/track/${track.id}`).then((res) => res.json()).then(t => {
                 if (!t.title) return;
-                dispatch(set(t));
+                // dispatch(set(t));
                 fetch(`https://api-music.inspare.cc/favourited/${localStorage.account_key}/${track.id}`);
             });
             if (track.youtube) {
