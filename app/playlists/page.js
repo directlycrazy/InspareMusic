@@ -14,6 +14,7 @@ function Playlist(playlist) {
 	const [image, setImage] = useState(null);
 
 	useEffect(() => {
+		if (!playlist?.data) return setImage(`https://ui-avatars.com/api/?name=%3F&background=222222&color=fff&size=512`);
 		ImageCard(Object.values(playlist?.data).slice(0, 4)).then(a => {
 			setImage(a);
 		});
