@@ -1,0 +1,44 @@
+require('dotenv').config();
+
+const express = require('express');
+const helmet = require('helmet');
+const morgan = require('morgan');
+
+const { createProxyMiddleware } = require('http-proxy-middleware');
+const { api } = require('./modules/api');
+const { stream } = require('./modules/stream');
+const playlists = require('./modules/playlists');
+
+const app = express();
+
+app.use(helmet());
+app.use(morgan('combined'));
+app.use(require('express-rate-limit')({
+	windowMs: 5 * 1000,
+	max: 50,
+	standardHeaders: true,
+	legacyHeaders: false,
+}));
+
+app.get('/', (req, res) => {
+	return res.sendStatus(200);
+});
+
+app.get('/track/:id', async (req, res) => {
+	let data = await api.fetch_track(req.params.id);
+	return res.send(data);
+});
+
+app.get('/stream/:id', async (req, res) => {
+	return await stream(req, res);
+});
+
+app.use('/playlists', playlists);
+
+app.use('/', createProxyMiddleware({
+	target: 'https://api.deezer.com', changeOrigin: true, onProxyRes: (proxyRes) => {
+		delete proxyRes.headers['set-cookie'];
+	}
+}));
+
+app.listen(3000 || process.env.PORT, () => { console.log(`Server Successfully Started on port ${3000 || process.env.PORT}`); });
