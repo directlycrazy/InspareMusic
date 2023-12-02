@@ -2,7 +2,7 @@ import Track from "./Track";
 
 export async function generateMetadata({ params, searchParams }, parent) {
 	const id = params.id;
-	const data = await fetch(`https://api-music.inspare.cc/track/${id}`).then((res) => res.json());
+	const data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/track/${id}`).then((res) => res.json());
 
 	return {
 		title: `${data?.title} on Inspare Music`,

@@ -27,6 +27,7 @@ api.fetch_track = async (id, fast) => {
 		title: data?.title,
 		artist: data?.artist?.name,
 		album: data?.album?.title,
+		type: 'deezer',
 		data: data
 	});
 	return data;

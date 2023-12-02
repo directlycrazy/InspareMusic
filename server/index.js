@@ -3,15 +3,21 @@ require('dotenv').config();
 const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const cors = require('cors');
 
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const { api } = require('./modules/api');
-const { stream } = require('./modules/stream');
+const stream = require('./modules/stream');
 const playlists = require('./modules/playlists');
+const history = require('./modules/history');
+const { keys } = require('./modules/auth');
 
 const app = express();
 
-app.use(helmet());
+app.use(helmet({
+	crossOriginResourcePolicy: false
+}));
+app.use(cors());
 app.use(morgan('combined'));
 app.use(require('express-rate-limit')({
 	windowMs: 5 * 1000,
@@ -29,11 +35,15 @@ app.get('/track/:id', async (req, res) => {
 	return res.send(data);
 });
 
-app.get('/stream/:id', async (req, res) => {
-	return await stream(req, res);
+app.get('/key', async (req, res) => {
+	let key = await keys.get(req.headers['authorization']);
+	if (!key) return res.sendStatus(400);
+	return res.send(key);
 });
 
+app.use('/stream/:key/:id', stream);
 app.use('/playlists', playlists);
+app.use('/history', history);
 
 app.use('/', createProxyMiddleware({
 	target: 'https://api.deezer.com', changeOrigin: true, onProxyRes: (proxyRes) => {

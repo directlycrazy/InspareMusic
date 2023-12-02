@@ -11,7 +11,7 @@ export default function album({ params }) {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			let res = await fetch(`https://api-music.inspare.cc/radio/${params.id}`);
+			let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/radio/${params.id}`);
 			res = await res.json();
 			setData({
 				img: res?.picture_medium,
@@ -19,7 +19,7 @@ export default function album({ params }) {
 				title: res?.title,
 				artist: `Last Updated on ${new Date(res?.last_updated).toLocaleDateString('en-US')}`
 			});
-			res = await fetch(`https://api-music.inspare.cc/radio/${params.id}/tracks`);
+			res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/radio/${params.id}/tracks`);
 			res = await res.json();
 			setTracks(res?.data);
 		};

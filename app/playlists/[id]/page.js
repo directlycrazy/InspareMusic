@@ -5,6 +5,7 @@ import Grid from "@/app/components/Grid";
 import { useEffect, useState } from "react";
 import Loading from "@/app/components/Loading";
 import ImageCard from "@/app/components/ImageCard";
+import PocketBase from 'pocketbase';
 
 export default function album({ params }) {
 	const [data, setData] = useState({});
@@ -12,52 +13,42 @@ export default function album({ params }) {
 	const [image, setImage] = useState(null);
 	const [tracks, setTracks] = useState([]);
 
+	const pb = new PocketBase(process.env.NEXT_PUBLIC_PB);
+
 	useEffect(() => {
 		const fetchData = async () => {
-			let res = await fetch(`https://api-music.inspare.cc/user/${localStorage.account_key}/playlists/get/${params.id}`);
+			let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/playlists/get/${params.id}`, {
+				headers: {
+					'authorization': pb.authStore.model.id
+				}
+			});
+			let data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/playlists/tracks/${params.id}`, {
+				headers: {
+					'authorization': pb.authStore.model.id
+				}
+			});
 			res = await res.json();
+			data = await data.json();
 			setData({
 				type: 'Playlist',
 				title: res?.name,
 				artist: 'Created by You',
 				subtitle: `0 songs`
 			});
-			if (!res.data) return setLoadFinished(true);
 
 			let t = [];
+			let image_tracks = [];
 
-			Object.values(res.data.order).forEach((id, i) => {
-				let track = res.data[id];
+			data?.items.forEach((track, i) => {
 				if (track === undefined) return;
 				if (!track?.id && !track?.youtube === true) return;
-				if (track.youtube === true) {
-					track = {
-						id: track.id,
-						album: {
-							cover: track.thumbnail,
-							title: track.title,
-							cover_xl: track.thumbnail,
-							cover_small: track.thumbnail,
-							cover_medium: track.thumbnail
-						},
-						artist: {
-							name: track.author
-						},
-						title: track.title,
-						duration: track.length,
-						contributors: [],
-						youtube: true,
-						added_on: track.added_on ? track.added_on : ''
-					};
-				}
-				// if (track.album === undefined) return;
-				t.push(track);
+				t.push(track?.expand?.track?.data);
+				if (i < 4) image_tracks.push(track?.expand?.track);
 			});
 
 			setLoadFinished(true);
 			setTracks(t);
-
-			let image = await ImageCard(t.slice(0, 4))
+			let image = await ImageCard(image_tracks);
 			setImage(image);
 		};
 		fetchData().catch(console.error);

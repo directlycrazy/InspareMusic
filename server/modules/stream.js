@@ -3,6 +3,7 @@ const dfi = require('d-fi-core');
 const axios = require('axios');
 const fs = require('fs');
 const { api } = require('./api');
+const { keys } = require('./auth');
 
 const temp = `${os.tmpdir()}/InspareMusic`;
 
@@ -32,7 +33,10 @@ const download = async (id, path) => {
 	}
 };
 
-const stream = async (req, res) => {
+const stream = async (req, res, next) => {
+	let auth = await keys.get(req.params.key);
+	if (!auth) return res.sendStatus(400);
+
 	let id = req.params.id;
 
 	if (id.endsWith('.mp3')) {
@@ -81,4 +85,4 @@ const init = async () => {
 
 init();
 
-module.exports = { stream };
+module.exports = stream;

@@ -9,24 +9,32 @@ import fetchTimeout from '../components/fetchTimeout';
 import Loading from "../components/Loading";
 import ImageCard from "../components/ImageCard";
 import CardList from "../components/CardList";
+import PocketBase from 'pocketbase';
 
 function Playlist(playlist) {
 	const [image, setImage] = useState(null);
 
 	useEffect(() => {
-		if (!playlist?.data) return setImage(`https://ui-avatars.com/api/?name=%3F&background=222222&color=fff&size=512`);
-		ImageCard(Object.values(playlist?.data).slice(0, 4)).then(a => {
+		if (!playlist?.tracks) return setImage(`https://ui-avatars.com/api/?name=%3F&background=222222&color=fff&size=512`);
+
+		let tracks = [];
+
+		playlist?.tracks.forEach((t) => {
+			tracks.push(t?.expand?.track);
+		});
+
+		ImageCard(tracks).then(a => {
 			setImage(a);
 		});
 	}, []);
 
 	let a = {
-		title: playlist?.name,
+		title: playlist?.playlist?.name,
 		img: image
 	};
 
 	return (
-		<Link href={`/playlists/${playlist.id}`}>
+		<Link href={`/playlists/${playlist?.playlist?.id}`}>
 			<Card {...a}></Card>
 		</Link>
 	);
@@ -38,6 +46,8 @@ export default function Playlists() {
 		artist: "0 playlists"
 	};
 
+	const pb = new PocketBase(process.env.NEXT_PUBLIC_PB);
+
 	const playlistName = useRef();
 	const [playlists, setPlaylists] = useState([]);
 	const [exists, setExists] = useState(true);
@@ -45,11 +55,17 @@ export default function Playlists() {
 
 	const fetchData = async () => {
 		try {
-			let res = await fetchTimeout(`https://api-music.inspare.cc/user/${localStorage.account_key}/playlists`, {
-				timeout: 2000
+			if (!pb.authStore.isValid) return;
+
+			let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/playlists/list`, {
+				headers: {
+					'authorization': pb.authStore.model.id
+				}
 			});
+
 			res = await res.json();
 			if (!res) return setExists(false);
+
 			setPlaylists(Object.values(res));
 		} catch (e) {
 			console.log(e);
@@ -58,7 +74,7 @@ export default function Playlists() {
 	};
 
 	async function createPlaylist() {
-		let res = await fetch(`https://api-music.inspare.cc/user/${localStorage.account_key}/playlists/create/${playlistName.current.value}`);
+		let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/${localStorage.account_key}/playlists/create/${playlistName.current.value}`);
 		res = await res.text();
 		setIsOpen(false);
 		setTimeout(() => {

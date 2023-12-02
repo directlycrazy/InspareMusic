@@ -12,10 +12,10 @@ export default function Discover() {
 
 	useEffect(() => {
 		async function load() {
-			let a = await fetch(`https://api-music.inspare.cc/chart`);
+			let a = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chart`);
 			a = await a.json();
 			setArtists(Object.values(a?.artists?.data));
-			let res = await fetch(`https://api-music.inspare.cc/playlist/3155776842`);
+			let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/playlist/3155776842`);
 			res = await res.json();
 			setResults(res.tracks?.data);
 		}

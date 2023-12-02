@@ -10,23 +10,21 @@ import CardList from "@/app/components/CardList";
 
 export default function album({ params }) {
 	const [data, setData] = useState({});
-	const [playlists, setPlaylists] = useState([])
+	const [playlists, setPlaylists] = useState([]);
 
 	useEffect(() => {
 		const fetchData = async () => {
-			let res = await fetch(`https://api-music.inspare.cc/artist/${params.id}`);
+			let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/artist/${params.id}`);
 			res = await res.json();
-			console.log(res)
 			setData({
 				img: res?.picture_medium,
 				type: res?.type ? (res?.type.charAt(0).toUpperCase() + res?.type.slice(1)) : null,
 				title: res?.name,
 				artist: `${res?.nb_album} Albums`
 			});
-			let res2 = await fetch(`https://api-music.inspare.cc/artist/${params.id}/albums`)
+			let res2 = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/artist/${params.id}/albums`);
 			res2 = await res2.json();
-			console.log(res2)
-			setPlaylists(Object.values(res2.data))
+			setPlaylists(Object.values(res2.data));
 		};
 		fetchData().catch(console.error);
 	}, []);
@@ -46,7 +44,7 @@ export default function album({ params }) {
 						<Link key={index} href={`/album/${playlist.id}`}>
 							<Card {...a}></Card>
 						</Link>
-					)
+					);
 				})}
 			</CardList>
 		</>

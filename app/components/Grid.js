@@ -3,6 +3,7 @@
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import { Menu, Transition, Dialog } from '@headlessui/react';
 import { Fragment, useState } from "react";
+import PocketBase from 'pocketbase';
 import { useDispatch } from "react-redux";
 import { set, set_queue } from '../stores/playerSlice';
 
@@ -12,18 +13,28 @@ export default function Grid(props) {
 	const [modalTrack, setModalTrack] = useState(null);
 	let tracks = props.tracks;
 
+	const pb = new PocketBase(process.env.NEXT_PUBLIC_PB);
+
 	const dispatch = useDispatch();
 
 	async function openModal(track) {
 		setIsOpen(true);
 		setModalTrack(track);
-		let playlists = await fetch(`https://api-music.inspare.cc/user/${localStorage.account_key}/playlists`);
+		let playlists = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/playlists/list`, {
+			headers: {
+				'authorization': pb.authStore.model.id
+			}
+		});
 		playlists = await playlists.json();
 		setPlaylists(Object.values(playlists));
 	}
 
 	async function addToPlaylist(playlist) {
-		let a = await fetch(`https://api-music.inspare.cc/user/${localStorage.account_key}/playlists/addremove/${playlist.id}/true/${modalTrack.id}`);
+		let a = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/playlists/add/${playlist.id}/${modalTrack.id}`, {
+			headers: {
+				'authorization': pb.authStore.model.id
+			}
+		});
 		if (a.ok) {
 			setIsOpen(false);
 		} else {
@@ -141,6 +152,7 @@ export default function Grid(props) {
 									</div>
 
 									{playlists && playlists?.length > 0 && playlists.map((playlist, index) => {
+										playlist = playlist?.playlist;
 										return (
 											<div className="mt-2 w-full" key={index}>
 												<button

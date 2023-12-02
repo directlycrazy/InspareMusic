@@ -8,12 +8,12 @@ export default async function (tracks) {
         let x = (index === 0 || index === 2) ? 0 : 250;
         //first, second values stay on top
         let y = index < 2 ? 0 : 250;
-        merge.push({ src: track?.album?.cover_medium, x: x, y: y })
-    })
+        merge.push({ src: track?.data?.album?.cover_medium, x: x, y: y });
+    });
     let res = await mergeImages(merge, {
         height: 500,
         width: 500,
         crossOrigin: "anonymous"
-    })
-    return res
+    });
+    return res;
 }

@@ -10,7 +10,7 @@ export default function Search() {
 	let timeout;
 
 	async function search(value) {
-		let res = await fetch(`https://api-music.inspare.cc/search?q=${value}`);
+		let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/search?q=${encodeURIComponent(value)}`);
 		res = await res.json();
 		setResults(res.data);
 	}

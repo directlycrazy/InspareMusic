@@ -1,6 +1,7 @@
 import { BackwardIcon, PlayIcon, ForwardIcon, SpeakerWaveIcon, PauseIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import PocketBase from 'pocketbase';
 import { useDispatch, useSelector } from "react-redux";
 import { set, set_queue } from "../stores/playerSlice";
 
@@ -17,6 +18,8 @@ export default function Player(props) {
     const tooltipRef = useRef(null);
     const progress = useRef(null);
     const audioRef = useRef(null);
+
+    const pb = new PocketBase(process.env.NEXT_PUBLIC_PB);
 
     const dispatch = useDispatch();
 
@@ -62,13 +65,13 @@ export default function Player(props) {
             artist: track?.artist?.name,
             album: track?.album?.title,
             artwork: [
-                { src: `https://music-proxy.inspare.cc/image?q=https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/96x96-000000-80-0-0.jpg`, sizes: '96x96', type: 'image/jpg' },
-                { src: `https://music-proxy.inspare.cc/image?q=https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/128x128-000000-80-0-0.jpg`, sizes: '128x128', type: 'image/jpg' },
-                { src: `https://music-proxy.inspare.cc/image?q=https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/192x192-000000-80-0-0.jpg`, sizes: '192x192', type: 'image/jpg' },
-                { src: `https://music-proxy.inspare.cc/image?q=https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/256x256-000000-80-0-0.jpg`, sizes: '256x256', type: 'image/jpg' },
-                { src: `https://music-proxy.inspare.cc/image?q=https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/384x384-000000-80-0-0.jpg`, sizes: '384x384', type: 'image/jpg' },
-                { src: `https://music-proxy.inspare.cc/image?q=https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/512x512-000000-80-0-0.jpg`, sizes: '512x512', type: 'image/jpg' },
-                { src: `https://music-proxy.inspare.cc/image?q=https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/1000x1000-000000-80-0-0.jpg`, sizes: '1000x1000', type: 'image/jpg' }
+                { src: `https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/96x96-000000-80-0-0.jpg`, sizes: '96x96', type: 'image/jpg' },
+                { src: `https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/128x128-000000-80-0-0.jpg`, sizes: '128x128', type: 'image/jpg' },
+                { src: `https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/192x192-000000-80-0-0.jpg`, sizes: '192x192', type: 'image/jpg' },
+                { src: `https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/256x256-000000-80-0-0.jpg`, sizes: '256x256', type: 'image/jpg' },
+                { src: `https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/384x384-000000-80-0-0.jpg`, sizes: '384x384', type: 'image/jpg' },
+                { src: `https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/512x512-000000-80-0-0.jpg`, sizes: '512x512', type: 'image/jpg' },
+                { src: `https://e-cdns-images.dzcdn.net/images/cover/${track?.album?.md5_image}/1000x1000-000000-80-0-0.jpg`, sizes: '1000x1000', type: 'image/jpg' }
             ]
         });
         navigator.mediaSession.setActionHandler('previoustrack', () => {
@@ -96,19 +99,17 @@ export default function Player(props) {
     }
 
     async function play() {
-        if (localStorage.account_key) {
-            let a = await fetch(`https://api-music.inspare.cc/request_streamkey/${localStorage.account_key}`);
-            fetch(`https://api-music.inspare.cc/track/${track.id}`).then((res) => res.json()).then(t => {
+        if (localStorage.pocketbase_auth && pb.authStore.isValid) {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/track/${track.id}`).then((res) => res.json()).then(t => {
                 if (!t.title) return;
                 // dispatch(set(t));
-                fetch(`https://api-music.inspare.cc/favourited/${localStorage.account_key}/${track.id}`);
+                fetch(`${process.env.NEXT_PUBLIC_API_URL}/history/add/${track.id}`, {
+                    headers: {
+                        'authorization': pb.authStore.model.id
+                    }
+                });
             });
-            if (track.youtube) {
-                console.log('Playing track from YouTube');
-                audioRef.current.src = `https://api-music.inspare.cc/stream/${localStorage.account_key}/${track.id}.mp3?type=yt`;
-            } else {
-                audioRef.current.src = `https://api-music.inspare.cc/lossless/${localStorage.account_key}/${track.id}.mp3`;
-            }
+            audioRef.current.src = `${process.env.NEXT_PUBLIC_API_URL}/stream/${pb.authStore.model.id}/${track.id}.mp3`;
             audioRef.current.load();
             await audioRef.current.play();
             mediaSession();

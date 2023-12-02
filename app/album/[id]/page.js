@@ -11,7 +11,7 @@ export default function album({ params }) {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			let res = await fetch(`https://api-music.inspare.cc/album/${params.id}`);
+			let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/album/${params.id}`);
 			res = await res.json();
 			setData({
 				img: res?.cover_medium,

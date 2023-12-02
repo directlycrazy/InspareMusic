@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Homepage from "./components/Home";
 import Card from "./components/Card";
 import { useDispatch } from "react-redux";
+import PocketBase from 'pocketbase';
 import { set, set_queue } from './stores/playerSlice';
 import Loading from "./components/Loading";
 import Link from "next/link";
@@ -11,27 +12,41 @@ import Link from "next/link";
 export default function Home() {
 	const dispatch = useDispatch();
 
+	const pb = new PocketBase(process.env.NEXT_PUBLIC_PB);
+
 	const [recentlyPlayed, setRecentlyPlayed] = useState([]);
 	const [quickPicks, setQuickPicks] = useState([]);
 
-	function play(track) {
+	function play(track, index) {
 		if (track && recentlyPlayed.length) {
 			dispatch(set(track));
 			dispatch(set_queue({
-				queue_pos: 0,
+				queue_pos: index,
 				tracks: recentlyPlayed
 			}));
 		}
 	}
 
 	const fetchData = async () => {
-		if (localStorage.account_key == undefined) return;
-		let res = await fetch(`https://api-music.inspare.cc/history/${localStorage.account_key}`);
+		if (localStorage.pocketbase_auth == undefined) return;
+		let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/history/get`, {
+			headers: {
+				'authorization': pb.authStore.model.id
+			}
+		});
+
 		res = await res.json();
+
+		let history = [];
+
+		res?.items.forEach(track => {
+			history.push(track?.expand?.track?.data);
+		});
+
 		try {
-			if (res) setRecentlyPlayed(Object.values(res)?.reverse());
+			if (res) setRecentlyPlayed(history);
 		} catch (e) { }
-		let picks = await fetch(`https://api-music.inspare.cc/radio`);
+		let picks = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/radio`);
 		picks = await picks.json();
 		setQuickPicks(picks?.data);
 	};
@@ -49,7 +64,7 @@ export default function Home() {
 					{!recentlyPlayed.length && <Loading></Loading>}
 					{recentlyPlayed.map((track, index) => {
 						return (
-							<button key={index} className="cursor-pointer text-left" onClick={() => { play(track); }}>
+							<button key={index} className="cursor-pointer text-left" onClick={() => { play(track, index); }}>
 								<Card title={track?.title} subtitle={track?.artist?.name} img={track?.album?.cover_medium}></Card>
 							</button>
 						);

@@ -18,6 +18,16 @@ db.get = async (table, id, options) => {
 	}
 };
 
+db.list = async (table, from, to, options) => {
+	if (!pb.authStore.isValid) return false;
+	try {
+		let data = await pb.collection(table).getList(from, to, options);
+		return data;
+	} catch (e) {
+		return false;
+	}
+};
+
 db.set = async (table, data) => {
 	if (!pb.authStore.isValid) return false;
 	try {

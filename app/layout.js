@@ -7,8 +7,7 @@ import { HomeIcon, MagnifyingGlassIcon, RocketLaunchIcon, Squares2X2Icon, CogIco
 import Player from './components/Player';
 import store from './store';
 import { Provider } from 'react-redux';
-import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from 'firebase/auth';
+import PocketBase from 'pocketbase';
 import { useEffect, useState } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -17,34 +16,19 @@ export default function RootLayout({ children }) {
 	const [username, setUsername] = useState('Log In');
 	const [menuOpen, setMenuOpen] = useState(false);
 
-	const firebaseConfig = {
-		apiKey: "AIzaSyAx6Kva6PUFY4_R222kWofzmui76HhC_OE",
-		authDomain: "inspare-music.firebaseapp.com",
-		databaseURL: "https://inspare-music-default-rtdb.firebaseio.com",
-		projectId: "inspare-music",
-		storageBucket: "inspare-music.appspot.com",
-		messagingSenderId: "1006979096581",
-		appId: "1:1006979096581:web:88feb2de3b23b75d5e7c6c"
-	};
-	const app = initializeApp(firebaseConfig);
-	const auth = getAuth();
-	const auth_provider = new GoogleAuthProvider();
+	const pb = new PocketBase(process.env.NEXT_PUBLIC_PB);
 
-	function login() {
-		signInWithPopup(auth, auth_provider).then(result => {
-			localStorage.setItem('account_key', result.user.uid);
-			const user = result.user;
-			console.log(user);
-			setUsername(user.displayName);
-		});
+	async function login() {
+		const authData = await pb.collection('users').authWithOAuth2({ provider: 'google' });
+		setUsername(pb.authStore.model.username);
 	}
 
 	useEffect(() => {
-		onAuthStateChanged(auth, (user) => {
-			if (user) {
-				setUsername(user.displayName);
-			}
-		});
+		const setup = async () => {
+			if (!pb.authStore.isValid) return;
+			setUsername(pb.authStore.model.username);
+		};
+		setup();
 	}, []);
 
 	const links = [
