@@ -41,9 +41,30 @@ export default function album({ params }) {
 
 			data?.items.forEach((track, i) => {
 				if (track === undefined) return;
-				if (!track?.id && !track?.youtube === true) return;
-				t.push(track?.expand?.track?.data);
-				if (i < 4) image_tracks.push(track?.expand?.track);
+				if (!track?.id) return;
+				track = track?.expand?.track;
+				if (track.type === 'youtube') {
+					let thumbnail = track?.data?.thumbnails?.[0]?.url;
+					t.push(track = {
+						id: track.id,
+						album: {
+							cover: thumbnail,
+							title: track.title,
+							cover_xl: thumbnail,
+							cover_small: thumbnail,
+							cover_medium: thumbnail
+						},
+						artist: {
+							name: track.artist
+						},
+						title: track.title,
+						contributors: [],
+						youtube: true
+					});
+				} else {
+					t.push(track?.data);
+					if (i < 4) image_tracks.push(track);
+				}
 			});
 
 			setLoadFinished(true);

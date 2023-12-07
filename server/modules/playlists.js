@@ -56,10 +56,15 @@ router.get('/get/:id', async (req, res) => {
 router.get('/add/:id/:track', async (req, res) => {
 	let data = await db.get('playlists', req.params.id);
 	if (!data) return res.sendStatus(404);
-	let track = await api.fetch_track(req.params.track);
+	let track;
+	if (req.query.type === 'youtube') {
+		track = await api.fetch_youtube(req.params.track);
+	} else {
+		track = await api.fetch_track(req.params.track);
+	}
 	let update = await db.set('playlist_tracks', {
 		playlist: req.params.id,
-		track: pad(track.id),
+		track: pad(req.params.track),
 		user: req.user.id
 	});
 	return res.send(data);

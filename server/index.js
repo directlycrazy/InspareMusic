@@ -35,6 +35,11 @@ app.get('/track/:id', async (req, res) => {
 	return res.send(data);
 });
 
+app.get('/youtube/:id', async (req, res) => {
+	let data = await api.fetch_youtube(req.params.id);
+	return res.send(data);
+});
+
 app.get('/key', async (req, res) => {
 	let key = await keys.get(req.headers['authorization']);
 	if (!key) return res.sendStatus(400);
