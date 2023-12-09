@@ -337,6 +337,7 @@ export default function RootLayout({ children }) {
 							</aside>
 							<main
 								className="w-full overflow-y-auto bg-white dark:bg-zinc-950 mb-20"
+								id="main"
 								style={{ marginTop: 72, zIndex: 10 }}
 							>
 								<div className='p-5 md:p-10'>

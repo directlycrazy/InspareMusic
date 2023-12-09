@@ -72,9 +72,11 @@ router.get('/add/:id/:track', async (req, res) => {
 
 router.get('/tracks/:id', async (req, res) => {
 	let playlist = await db.get('playlists', req.params.id);
-	let data = await db.list('playlist_tracks', 0, 10000, {
+	let page = req.query.page || 0;
+	let data = await db.list('playlist_tracks', 0, 50, {
 		filter: `playlist = "${playlist.id}" && user = "${req.user.id}"`,
-		expand: "track"
+		expand: "track",
+		page: page
 	});
 	if (!data) return res.sendStatus(404);
 	return res.send(data);

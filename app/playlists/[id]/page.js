@@ -15,29 +15,39 @@ export default function album({ params }) {
 
 	const pb = new PocketBase(process.env.NEXT_PUBLIC_PB);
 
-	useEffect(() => {
-		const fetchData = async () => {
-			let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/playlists/get/${params.id}`, {
+	let loadingMore = false;
+	let page = 1;
+
+	const load_more = async () => {
+		if (loadingMore) return;
+		let div = document.querySelector('#main');
+		let scrollTop = div.scrollTop;
+		let scrollHeight = div.scrollHeight;
+		let offsetHeight = div.offsetHeight;
+		if (scrollHeight - (scrollTop + offsetHeight) <= 100) {
+			loadingMore = true;
+			page++;
+			fetchTracks();
+			return;
+		}
+	};
+
+	const fetchTracks = () => {
+		return new Promise(async (res) => {
+			let data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/playlists/tracks/${params.id}?page=${page}`, {
 				headers: {
 					'authorization': pb.authStore.model.id
 				}
-			});
-			let data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/playlists/tracks/${params.id}`, {
-				headers: {
-					'authorization': pb.authStore.model.id
-				}
-			});
-			res = await res.json();
-			data = await data.json();
-			setData({
-				type: 'Playlist',
-				title: res?.name,
-				artist: 'Created by You',
-				subtitle: `0 songs`
 			});
 
-			let t = [];
 			let image_tracks = [];
+
+			let t = [];
+
+			data = await data.json();
+
+			console.log(data.totalPages)
+			if (page > data?.totalPages) return;
 
 			data?.items.forEach((track, i) => {
 				if (track === undefined) return;
@@ -63,16 +73,53 @@ export default function album({ params }) {
 					});
 				} else {
 					t.push(track?.data);
-					if (i < 4) image_tracks.push(track);
 				}
+
+				if (i < 4 && page === 1) image_tracks.push(track);
 			});
 
-			setLoadFinished(true);
-			setTracks(t);
-			let image = await ImageCard(image_tracks);
-			setImage(image);
-		};
+			setTracks(prev => [...prev, ...t]);
+
+			if (page === 1) {
+				if (!image_tracks) return;
+				let image = await ImageCard(image_tracks);
+				setImage(image);
+			}
+
+			res();
+
+			setTimeout(() => {
+				loadingMore = false;
+			}, 200);
+		});
+	};
+
+	const fetchData = async () => {
+		let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/playlists/get/${params.id}`, {
+			headers: {
+				'authorization': pb.authStore.model.id
+			}
+		});
+
+		res = await res.json();
+
+		setData({
+			type: 'Playlist',
+			title: res?.name,
+			artist: 'Created by You',
+			subtitle: `0 songs`
+		});
+
+		await fetchTracks();
+
+		setLoadFinished(true);
+	};
+
+	useEffect(() => {
 		fetchData().catch(console.error);
+
+		document.querySelector('#main').addEventListener('scroll', load_more);
+		return () => document.querySelector('#main').removeEventListener('scroll', load_more);
 	}, []);
 
 	return (
