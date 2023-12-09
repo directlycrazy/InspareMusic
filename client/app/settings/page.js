@@ -1,21 +1,8 @@
-'use client'
+'use client';
 
 import { DocumentCheckIcon } from "@heroicons/react/24/solid";
-import { useEffect, useRef } from "react";
 
 export default function Settings() {
-	const token = useRef(null)
-
-	function save() {
-		console.log(token.current.value)
-		localStorage.setItem('account_key', token.current.value);
-	}
-
-	useEffect(() => {
-		if (!localStorage.account_key) return;
-		token.current.value = localStorage.account_key
-	}, [])
-
 	return (
 		<div className="md:grid grid-cols-2">
 			<div
