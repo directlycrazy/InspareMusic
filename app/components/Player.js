@@ -182,7 +182,7 @@ export default function Player(props) {
                     onMouseLeave={() => { setTooltipData({ style: { visibility: 'hidden' } }); }}
                     style={{ height: 5, marginBottom: 66 }}
                 >
-                    <div className="absolute h-full bg-blue-600" ref={progress} id="player_progress_bar" style={{ width: `${percentage}%` }} />
+                    <div className="absolute h-full bg-indigo-600" ref={progress} id="player_progress_bar" style={{ width: `${percentage}%` }} />
                 </div>
             </div>
             <div

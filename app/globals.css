@@ -109,11 +109,11 @@
 
 @layer components {
   .selected-page {
-    @apply bg-zinc-200 dark:bg-zinc-700 text-black inline-flex items-center rounded-md w-full mb-2 px-3 py-2 text-sm font-semibold hover:text-white dark:text-white hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600;
+    @apply bg-zinc-200 dark:bg-zinc-700 text-black inline-flex items-center rounded-md w-full mb-2 px-3 py-2 text-sm font-semibold hover:text-white dark:text-white hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600;
   }
 
   .sidebar-btn {
-    @apply inline-flex items-center rounded-md w-full mb-2 px-3 py-2 text-sm font-semibold bg-transparent text-black hover:text-white dark:text-white hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600;
+    @apply inline-flex items-center rounded-md w-full mb-2 px-3 py-2 text-sm font-semibold bg-transparent text-black hover:text-white dark:text-white hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600;
   }
 }
 

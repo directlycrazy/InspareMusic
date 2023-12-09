@@ -144,14 +144,14 @@ export default function Playlists() {
 												ref={playlistName}
 												autoComplete="off"
 												placeholder="Name"
-												className="block w-full rounded-md border-0 bg-white dark:bg-zinc-700 dark:text-white p-2 text-zinc-900 shadow-sm ring-1 ring-inset ring-zinc-300 placeholder:text-zinc-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+												className="block w-full rounded-md border-0 bg-white dark:bg-zinc-700 dark:text-white p-2 text-zinc-900 shadow-sm ring-1 ring-inset ring-zinc-300 placeholder:text-zinc-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 											/>
 										</div>
 										<div className="mt-2">
 											<button
 												type="button"
 												onClick={createPlaylist}
-												className="w-full inline-flex justify-center rounded-md border border-transparent bg-blue-100 dark:bg-blue-500 px-4 py-2 text-sm font-medium text-blue-900 dark:text-white hover:bg-blue-200 dark:hover:bg-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+												className="w-full inline-flex justify-center rounded-md border border-transparent bg-indigo-100 dark:bg-indigo-500 px-4 py-2 text-sm font-medium text-indigo-900 dark:text-white hover:bg-indigo-200 dark:hover:bg-indigo-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
 											>
 												Save
 											</button>

@@ -157,7 +157,7 @@ export default function Grid(props) {
 											<div className="mt-2 w-full" key={index}>
 												<button
 													type="button"
-													className="w-full inline-flex justify-center rounded-md border border-transparent bg-blue-100 dark:bg-blue-500 px-4 py-2 text-sm font-medium text-blue-900 dark:text-white hover:bg-blue-200 dark:hover:bg-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+													className="w-full inline-flex justify-center rounded-md border border-transparent bg-indigo-100 dark:bg-indigo-500 px-4 py-2 text-sm font-medium text-indigo-900 dark:text-white hover:bg-indigo-200 dark:hover:bg-indigo-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
 													onClick={() => { addToPlaylist(playlist); }}
 												>
 													{playlist.name}

@@ -10,7 +10,7 @@ export default function Homepage() {
 					<div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
 						<div className="lg:pr-8 lg:pt-4">
 							<div className="lg:max-w-lg">
-								<h2 className="text-base font-semibold leading-7 text-blue-600">
+								<h2 className="text-base font-semibold leading-7 text-indigo-600">
 									Introducing...
 								</h2>
 								<p className="mt-2 text-3xl font-bold tracking-tight text-zinc-900 dark:text-white sm:text-4xl">
@@ -24,7 +24,7 @@ export default function Homepage() {
 									<div className="relative pl-9">
 										<dt className="inline font-semibold text-zinc-900 dark:text-white">
 											<svg
-												className="absolute left-1 top-1 h-5 w-5 text-blue-600"
+												className="absolute left-1 top-1 h-5 w-5 text-indigo-600"
 												viewBox="0 0 20 20"
 												fill="currentColor"
 												aria-hidden="true"
@@ -44,7 +44,7 @@ export default function Homepage() {
 									<div className="relative pl-9">
 										<dt className="inline font-semibold text-zinc-900 dark:text-white">
 											<svg
-												className="absolute left-1 top-1 h-5 w-5 text-blue-600"
+												className="absolute left-1 top-1 h-5 w-5 text-indigo-600"
 												viewBox="0 0 20 20"
 												fill="currentColor"
 												aria-hidden="true"
@@ -65,7 +65,7 @@ export default function Homepage() {
 									<div className="relative pl-9">
 										<dt className="inline font-semibold text-zinc-900 dark:text-white">
 											<svg
-												className="absolute left-1 top-1 h-5 w-5 text-blue-600"
+												className="absolute left-1 top-1 h-5 w-5 text-indigo-600"
 												viewBox="0 0 20 20"
 												fill="currentColor"
 												aria-hidden="true"
