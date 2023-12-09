@@ -74,7 +74,11 @@ export default function Playlists() {
 	};
 
 	async function createPlaylist() {
-		let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/${localStorage.account_key}/playlists/create/${playlistName.current.value}`);
+		let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/playlists/create/${playlistName.current.value}`, {
+			headers: {
+				'authorization': pb.authStore.model.id
+			}
+		});
 		res = await res.text();
 		setIsOpen(false);
 		setTimeout(() => {
