@@ -56,4 +56,4 @@ app.use('/', createProxyMiddleware({
 	}
 }));
 
-app.listen(3000 || process.env.PORT, () => { console.log(`Server Successfully Started on port ${3000 || process.env.PORT}`); });
+app.listen(3001 || process.env.PORT, () => { console.log(`Server Successfully Started on port ${3001 || process.env.PORT}`); });
