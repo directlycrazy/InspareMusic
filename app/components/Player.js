@@ -109,7 +109,8 @@ export default function Player(props) {
                     }
                 });
             });
-            audioRef.current.src = `${process.env.NEXT_PUBLIC_API_URL}/stream/${pb.authStore.model.id}/${track.id}.mp3`;
+
+            audioRef.current.src = `${process.env.NEXT_PUBLIC_API_URL}/stream/${pb.authStore.model.id}/${track.id}.mp3${track.youtube ? '?type=youtube' : ''}`;
             audioRef.current.load();
             await audioRef.current.play();
             mediaSession();

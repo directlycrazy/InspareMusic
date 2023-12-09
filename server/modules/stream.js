@@ -2,8 +2,10 @@ const os = require('os');
 const dfi = require('d-fi-core');
 const axios = require('axios');
 const fs = require('fs');
+const ytdl = require('@distube/ytdl-core');
 const { api } = require('./api');
 const { keys } = require('./auth');
+const { unpad } = require('./utils');
 
 const temp = `${os.tmpdir()}/InspareMusic`;
 
@@ -33,6 +35,38 @@ const download = async (id, path) => {
 	}
 };
 
+const youtube = (id, path) => {
+	return new Promise(async (res, rej) => {
+		try {
+			id = unpad(id);
+
+			const data = await ytdl(id, {
+				quality: 'highest',
+				filter: (format) => {
+					if (format.mimeType.startsWith('audio/mp4')) {
+						return true;
+					}
+				}
+			});
+
+			let write = fs.createWriteStream(path);
+
+			data.pipe(write);
+
+			data.on('end', () => {
+				return res(true);
+			});
+
+			data.on('error', (e) => {
+				return rej(false);
+			});
+		} catch (e) {
+			console.log(e);
+			return false;
+		}
+	});
+};
+
 const stream = async (req, res, next) => {
 	let auth = await keys.get(req.params.key);
 	if (!auth) return res.sendStatus(400);
@@ -45,7 +79,6 @@ const stream = async (req, res, next) => {
 		return res.sendStatus(404);
 	}
 
-	if (isNaN(id)) return false;
 	let request_cancelled = false;
 
 	req.on('close', () => {
@@ -59,6 +92,16 @@ const stream = async (req, res, next) => {
 
 	//file already on server
 	if (exists) return res.sendFile(path);
+
+	if (req.query.type && req.query.type === 'youtube') {
+		let dl = await youtube(id, path).catch(() => {
+			return res.sendStatus(500);
+		});
+
+		if (!dl) return res.sendStatus(500);
+
+		return res.sendFile(path);
+	}
 
 	exists = await check_exists(id);
 	//track does not exist
