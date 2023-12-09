@@ -1,20 +1,22 @@
 const { db } = require('./db');
 
+let keys = {};
+let cached_users = {};
+
 module.exports = async (req, res, next) => {
-	let user = await db.get('users', req.headers['authorization']);
-	if (!user) return res.sendStatus(400);
-	req.user = user;
+	let auth = req.headers['authorization'];
+	if (!auth) return res.sendStatus(401);
+	let cache = await keys.get(auth);
+	if (!cache) return res.sendStatus(401);
+	req.user = cached_users[auth];
 	return next();
 };
 
-let keys = {};
-let cached_users = [];
-
 keys.get = async (key) => {
-	if (cached_users.includes(key)) return key;
+	if (cached_users[key]) return key;
 	let val = await db.get('users', key);
 	if (val) {
-		cached_users.push(key);
+		cached_users[key] = val;
 		return key;
 	}
 	return false;
