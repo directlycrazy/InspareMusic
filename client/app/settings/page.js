@@ -48,7 +48,6 @@ export default function Settings() {
 				<button
 					type="button"
 					className="selected-page mt-4 rounded-md p-2.5 text-zinc-700 dark:text-white"
-					onClick={save}
 					style={{ width: 90 }}
 				>
 					<span className="sr-only">Close menu</span>
