@@ -18,13 +18,14 @@ app.use(helmet({
 	crossOriginResourcePolicy: false
 }));
 app.use(cors());
-app.use(morgan('combined'));
+app.enable("trust proxy");
 app.use(require('express-rate-limit')({
 	windowMs: 5 * 1000,
 	max: 50,
 	standardHeaders: true,
 	legacyHeaders: false,
 }));
+app.use(morgan('combined'));
 
 app.get('/', (req, res) => {
 	return res.sendStatus(200);
@@ -56,4 +57,4 @@ app.use('/', createProxyMiddleware({
 	}
 }));
 
-app.listen(3001 || process.env.PORT, () => { console.log(`Server Successfully Started on port ${3001 || process.env.PORT}`); });
+app.listen(process.env.PORT || 3001, () => { console.log(`Server Successfully Started on port ${process.env.PORT || 3001}`); });
