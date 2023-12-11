@@ -46,7 +46,6 @@ export default function album({ params }) {
 
 			data = await data.json();
 
-			console.log(data.totalPages)
 			if (page > data?.totalPages) return;
 
 			data?.items.forEach((track, i) => {
@@ -117,10 +116,13 @@ export default function album({ params }) {
 
 	useEffect(() => {
 		fetchData().catch(console.error);
+	}, []);
 
+	useEffect(() => {
+		if (!loadFinished) return;
 		document.querySelector('#main').addEventListener('scroll', load_more);
 		return () => document.querySelector('#main').removeEventListener('scroll', load_more);
-	}, []);
+	}, [loadFinished]);
 
 	return (
 		<>
