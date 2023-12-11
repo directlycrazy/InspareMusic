@@ -1,0 +1,12 @@
+app = "inspare-music"
+primary_region = "yyz"
+
+[build]
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
