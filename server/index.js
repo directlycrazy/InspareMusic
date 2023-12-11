@@ -12,6 +12,10 @@ const playlists = require('./modules/playlists');
 const history = require('./modules/history');
 const { keys } = require('./modules/auth');
 
+process.on('uncaughtException', function (error) {
+	console.log(error.stack);
+});
+
 const app = express();
 
 app.use(helmet({

@@ -5,7 +5,8 @@ const fs = require('fs');
 const ytdl = require('@distube/ytdl-core');
 const { api } = require('./api');
 const { keys } = require('./auth');
-const { unpad } = require('./utils');
+const { unpad, pad } = require('./utils');
+const { db } = require('./db');
 
 const temp = `${os.tmpdir()}/InspareMusic`;
 
@@ -21,6 +22,41 @@ const file_exists = async (path) => {
 	return fs.existsSync(path);
 };
 
+const youtube_search = async (id, path) => {
+	try {
+		let track = await api.fetch_track(id);
+		if (!track) return false;
+
+		let yt_id = await db.list('youtube_refs', 0, 1, {
+			filter: `track = "${pad(id)}"`
+		});
+
+		if (yt_id) yt_id = yt_id?.items?.[0]?.youtube;
+
+		if (!yt_id) {
+			const ytmusic = await import('node-youtube-music');
+			const music = await ytmusic.searchMusics(`${track?.artist?.name} ${track?.title}`);
+
+			yt_id = music?.[0]?.youtubeId;
+			if (!yt_id) return false;
+
+			await db.set('youtube_refs', {
+				track: pad(id),
+				youtube: yt_id
+			});
+		}
+
+		await youtube(yt_id, path).catch(() => {
+			return false;
+		});
+
+		return true;
+	} catch (e) {
+		console.log(e);
+		return false;
+	}
+};
+
 const download = async (id, path) => {
 	try {
 		const track = await dfi.getTrackInfo(id);
@@ -31,6 +67,9 @@ const download = async (id, path) => {
 		return true;
 	} catch (e) {
 		console.log(e);
+		console.log('Deezer playback failed, falling back to YouTube.');
+		let yt = await youtube_search(id, path);
+		if (yt) return true;
 		return false;
 	}
 };
@@ -38,8 +77,6 @@ const download = async (id, path) => {
 const youtube = (id, path) => {
 	return new Promise(async (res, rej) => {
 		try {
-			id = unpad(id);
-
 			const data = await ytdl(id, {
 				quality: 'highest',
 				filter: (format) => {
@@ -94,7 +131,7 @@ const stream = async (req, res, next) => {
 	if (exists) return res.sendFile(path);
 
 	if (req.query.type && req.query.type === 'youtube') {
-		let dl = await youtube(id, path).catch(() => {
+		let dl = await youtube(unpad(id), path).catch(() => {
 			return res.sendStatus(500);
 		});
 
