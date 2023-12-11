@@ -19,28 +19,17 @@ Your free, personal, self-hosted music streaming service with Deezer and YouTube
 
 ## Getting Started
 
-You will need a PocketBase server for this project. You can create one free at pockethost.io
+### PocketBase
 
-First, run the Next.js client,
+You will need a PocketBase server for this project. You can create one for free at [pockethost.io](https://pockethost.io), or self host it from [pocketbase.io](https://pocketbase.io).
 
-You will need to fill out a few environment variables first, to set your PocketBase instance URL and your server url.
+You will also need to import the required collections from the [provided JSON file](./pocketbase/collections.json).
 
-```env
-NEXT_PUBLIC_PB=YOUR_POCKETBASE_URL
-NEXT_PUBLIC_API_URL=YOUR_API_URL
-```
+### Server
 
-```bash
-cd client
+You will need to fill out a few environment variables before getting started. **The PocketBase credentials are only for admin accounts, not for user accounts.**
 
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-Next run the main server,
-
-Again, you will need to fill out a few environment variables before getting started. **The PocketBase credentials are all for admin accounts**
+Create a .env file in the `server` folder.
 
 ```env
 PB_EMAIL=POCKETBASE_EMAIL
@@ -49,13 +38,40 @@ PB_URL=POCKETBASE_URL
 ARL=DEEZER_ARL
 ```
 
-This README does not cover how to obtain your Deezer ARL. Please do not ask for any.
+This README does not cover how to obtain your Deezer ARL. Please do not ask for any in issues or discussions.
+
+Run the server:
 
 ```bash
 cd server
-
+npm install
 npm start
 ```
+
+### Client
+
+Similarly, you will need to fill out a few environment variables first, to set your PocketBase instance URL and your server URL.
+
+Create a .env file in the `client` folder.
+
+```env
+NEXT_PUBLIC_PB=YOUR_POCKETBASE_URL
+NEXT_PUBLIC_API_URL=YOUR_API_URL
+```
+
+```bash
+cd client
+npm install
+# (production, recommended)
+npm run build
+npm run start
+# (development)
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+Success, you should now be able to use Inspare Music.
 
 ## DISCLAIMER
 THIS REPOSITORY IS PROVIDED FOR ONLY EDUCATIONAL PURPOSES. THE OWNER(S) OF THIS PROJECT DO NOT CONDONE PIRACY OR ASSUME ANY LIABILITY FOR DAMAGES CAUSED. NO DEEZER ARLS ARE PROVIDED.
