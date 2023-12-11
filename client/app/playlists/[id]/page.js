@@ -54,7 +54,7 @@ export default function album({ params }) {
 				track = track?.expand?.track;
 				if (track.type === 'youtube') {
 					let thumbnail = track?.data?.thumbnails?.[0]?.url;
-					t.push(track = {
+					t.push({
 						id: track.id,
 						album: {
 							cover: thumbnail,
