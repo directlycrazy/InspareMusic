@@ -81,10 +81,12 @@ export default function Player(props) {
             skip();
         });
         navigator.mediaSession.setActionHandler('play', () => {
-            togglePlay();
+            setPlaying(!playing)
+            document.querySelector('audio').play();
         });
         navigator.mediaSession.setActionHandler('pause', () => {
-            togglePlay();
+            setPlaying(!playing);
+            document.querySelector('audio').pause();
         });
         navigator.mediaSession.setActionHandler('seekto', (details) => {
             if (details.fastSeek && 'fastSeek' in document.querySelector('audio')) {
