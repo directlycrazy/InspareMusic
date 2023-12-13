@@ -55,7 +55,7 @@ export default function Playlists() {
 
 	const fetchData = async () => {
 		try {
-			if (!pb.authStore.isValid) return;
+			if (!pb.authStore.isValid) return setExists(false);
 
 			let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/playlists/list`, {
 				headers: {
