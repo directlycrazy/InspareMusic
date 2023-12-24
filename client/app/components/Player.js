@@ -10,7 +10,7 @@ export default function Player(props) {
     const queue = useSelector(state => state.player.queue);
     const queue_pos = useSelector(state => state.player.queue_pos);
     const [percentage, setPercentage] = useState(0);
-    const [volume, setVolume] = useState(0.5);
+    const [volume, setVolume] = useState(1);
     const [playing, setPlaying] = useState(false);
     const [duration, setDuration] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
@@ -81,7 +81,7 @@ export default function Player(props) {
             skip();
         });
         navigator.mediaSession.setActionHandler('play', () => {
-            setPlaying(!playing)
+            setPlaying(!playing);
             document.querySelector('audio').play();
         });
         navigator.mediaSession.setActionHandler('pause', () => {
@@ -233,6 +233,7 @@ export default function Player(props) {
                         min={0}
                         max={1}
                         onChange={volumeChange}
+                        defaultValue={1}
                         step="0.01"
                         className="slider-input w-24 bg-zinc-700"
                     />
